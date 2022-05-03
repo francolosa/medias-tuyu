@@ -1,0 +1,14 @@
+[{
+    "id": 0,
+    "name": "Batman",
+    "description": "hola",
+    "img": "url",
+    "stock": 2
+},
+{
+    "id": 1,
+    "name": "Bob esponja",
+    "description": "hola",
+    "img": "url",
+    "stock": 4
+}]
