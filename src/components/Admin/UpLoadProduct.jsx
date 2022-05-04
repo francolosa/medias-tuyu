@@ -1,18 +1,37 @@
 import { collection, addDoc } from 'firebase/firestore';
-import React from 'react';
-import { db } from '../../firebase'
-export default function UpLoadProduct(){
+import React, { useState } from 'react';
+import { db } from '../../firebase';
+import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
+export default function UpLoadProduct(){
+    const [ nombre, setNombre ] = useState("");
+    const [ color, setColor ] = useState("");
+    const [ descripcion, setDescripcion ] = useState("");
+    const [ precio, setPrecio ] = useState(0);
+    const [ stock, setStock ] = useState(0);
+    const [ talle, setTalle ] = useState("");
+    const [ image, setImage ] = useState();
+
+    const handleNombreChange = event => setNombre(event.target.value);
+    const handleColorChange = event => setColor(event.target.value);
+    const handleDescripcionChange = event => setDescripcion(event.target.value);
+    const handlePrecioChange = event => setPrecio(event.target.value);
+    const handleStockChange = event => setStock(event.target.value);
+    const handleTalleChange = event => setTalle(event.target.value);
+    const handleImageChange = event => setImage(event.target.files[0]);
+    
     const items = collection(db, 'items');
 
-    const onUpload = () => {
-        let nombre = document.getElementById('nombre').value
-        let color = document.getElementById('color').value
-        let descripcion = document.getElementById('descripcion').value
-        let precio = document.getElementById('precio').value
-        let stock = document.getElementById('stock').value
-        let talle = document.getElementById('talle').value
-    
+    const onUpload = async (evt) => {
+        evt.preventDefault()
+        
+        const storage = getStorage();
+        const imageName = (+ new Date()).toString(36);
+        const storageRef = ref(storage, `items/${imageName}`);
+
+        const uploadTask = await uploadBytes(storageRef, image);
+        const pictureURL = await getDownloadURL(uploadTask.ref);
+     
         let newItem = {
             nombre: nombre,
             color: color,
@@ -20,6 +39,7 @@ export default function UpLoadProduct(){
             precio: precio,
             stock: stock,
             talle: talle,
+            img: pictureURL
         }
         addDoc(items, newItem);
         console.log("Se creó el item");
@@ -29,13 +49,21 @@ export default function UpLoadProduct(){
     return     <div className="cargarProducto">
         <h1>Cargar producto</h1>
         <form >
-            <label>Nombre<input type="text" id="nombre"></input></label><br/>
-            <label>Color<input type="text" id="color"></input></label><br/>
-            <label>Descripción<input type="textarea" id="descripcion"></input></label><br/>
-            <label>Precio<input type="number" id="precio"></input></label><br/>
-            <label>Stock<input type="number" id="stock"></input></label><br/>
-            <label>Talle<input type="text" id="talle"></input></label><br/>
+            <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" onChange={handleNombreChange}></input><br/>
+            <label for="color">Color</label>
+                <input type="text" id="color" onChange={handleColorChange}></input><br/>
+            <label for="descripcion">Descripción</label>
+                <input type="textarea" id="descripcion" onChange={handleDescripcionChange}></input><br/>
+            <label for="precio">Precio</label>
+                <input type="number" id="precio" onChange={handlePrecioChange}></input><br/>
+            <label for="stock">Stock</label>
+                <input type="number" id="stock" onChange={handleStockChange}></input><br/>
+            <label for="talle">Talle</label>
+                <input type="text" id="talle" onChange={handleTalleChange}></input><br/>
+                <label for="image">Imagen</label>
+                <input type="file" id="image" onChange={handleImageChange}></input><br/>
+            <button type="submit" onClick={onUpload}>Subir item</button>
         </form>
-        <button type="submit" onClick={onUpload}>Subir item</button>
     </div>
 }

@@ -2,6 +2,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../../firebase'
+import { getStorage, ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 export default function UpDateProduct(){    
     const { productId } = useParams();
@@ -12,6 +13,8 @@ export default function UpDateProduct(){
     const [ precio, setPrecio ] = useState();
     const [ stock, setStock ] = useState();
     const [ talle, setTalle ] = useState();
+    const [ image, setImage ] = useState();
+    const [ cambiarImagen, setCambiarImagen] = useState(false);
 
     const handleNombreChange = event => setNombre(event.target.value);
     const handleColorChange = event => setColor(event.target.value);
@@ -19,6 +22,7 @@ export default function UpDateProduct(){
     const handlePrecioChange = event => setPrecio(event.target.value);
     const handleStockChange = event => setStock(event.target.value);
     const handleTalleChange = event => setTalle(event.target.value);
+    const handleImageChange = event => setImage(event.target.files[0]);
     
     useEffect(() => {
         const ref = doc(db, "items", productId);
@@ -31,6 +35,7 @@ export default function UpDateProduct(){
                     setPrecio(snapshot.data().precio)
                     setStock(snapshot.data().stock)
                     setTalle(snapshot.data().talle)
+                    setImage(snapshot.data().image)
                 }
             }).catch(error => {
                 console.log(error)
@@ -38,8 +43,16 @@ export default function UpDateProduct(){
     }, [productId]);
 
 
-    const onUpdate = () => {
+    const onUpdate = async (evt) => {
+        evt.preventDefault()
         const item = doc(db, 'items', productId);
+        const storage = getStorage();
+        const imageName = (+ new Date()).toString(36);
+        const storageRef = ref(storage, `items/${imageName}`);
+
+        const uploadTask = await uploadBytes(storageRef, image);
+        const pictureURL = await getDownloadURL(uploadTask.ref);
+        
         let newItem = {
             nombre: nombre,
             color: color,
@@ -47,11 +60,17 @@ export default function UpDateProduct(){
             precio: precio,
             stock: stock,
             talle: talle,
+            img: pictureURL
         }
         updateDoc(item, newItem);
         console.log("Se actualizó el item");
     }
-  
+    
+    const onCambiarImagen = (evt) => {
+        evt.preventDefault()
+        setCambiarImagen(true)
+    }
+
     return     <div className="updateProduct">
         <h1>Modificar producto</h1>
         <form >            
@@ -67,6 +86,9 @@ export default function UpDateProduct(){
                 <input type="number" id="stock" value={stock} onChange={handleStockChange}></input><br/>
             <label for="talle">Talle</label>
                 <input type="text" id="talle" value={talle} onChange={handleTalleChange}></input><br/>
+                <img src={image} width="150px"></img><br/>
+             { cambiarImagen ? <input type="file" id="image" onChange={handleImageChange}></input> : <button onClick={onCambiarImagen}>Cambiar Imagen</button>}   
+                
         </form>
         <button type="submit" onClick={onUpdate}>Actualizar item</button>
     </div>

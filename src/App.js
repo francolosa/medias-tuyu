@@ -35,7 +35,7 @@ function App() {
         <Route path="/user/profile" element={<ProfileUser/>} />
         <Route path="/products" element={<ItemListContainer/>} />
         { admin ? <Route path="/products/upLoad" element={<UpLoadProduct/>}  /> : console.log("Ruta invalida") }
-        { admin ? <Route path="/products/upDate/:productId" element={<UpDateProduct/>} /> : console.log("Ruta invalida")  }
+         <Route path="/products/upDate/:productId" element={<UpDateProduct/>} /> 
         <Route path="/product/:productId" element={<ItemDetail/>} />
       </Routes>
     </BrowserRouter>
