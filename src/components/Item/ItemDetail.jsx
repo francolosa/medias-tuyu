@@ -3,7 +3,6 @@ import ItemCounter from './Counter/ItemCounter';
 import { useParams } from 'react-router-dom';
 import { getDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from "../../firebase";
-import { Link } from 'react-router-dom';
 import { UserContext } from '../../context/userContext'
 
 export default function ItemDetail() {
@@ -29,7 +28,13 @@ export default function ItemDetail() {
             })
     }, [productId]);
 
+    const onEditarItem = () => {
+        window.location.assign(`/products/upDate/${item.id}`)
+    }
+
     return (
+        <div className='itemDetailContainer'>
+                    <h1>detalle </h1>
         <div className="itemDetail" id={item.id}>
             <ul>
                 <li>Nombre: {item.nombre}</li>
@@ -40,12 +45,13 @@ export default function ItemDetail() {
                 </select></li>
                 <li>Descripcion: {item.descripcion}</li>
                 <li>Talle: {item.talle}</li>
-                <li><img src={item.img} width="150px"></img></li>
+                <img src={item.img} width="150px"></img>
                
             </ul>
-                { admin ? <Link to={`/products/upDate/${item.id}`}> Editar Producto </Link>  : ""}
-                { admin ? <button onClick={onEliminarItem}>Eliminar item</button> : ""}
+                { admin ? <button onClick={onEditarItem}> Editar Item </button> : ""}
+                { admin ? <button onClick={onEliminarItem}>Eliminar Item</button> : ""}
             <ItemCounter item={item} />
+        </div>
         </div>
     )
 }

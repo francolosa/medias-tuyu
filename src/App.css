@@ -1,39 +1,133 @@
-.App {
+.navBar {
+  margin:15px;
+  padding:5px;
+  width: 100%;
+  font-size: larger;
+}
+h1 {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+a{
+  text-decoration: none;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.itemListContainer {
   display: flex;
-  flex-direction: column;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap
+}
+
+.carritoContainer {
+  display: flex;
+  flex-direction:column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-.navBar {
-  background-color: #61dafb;
 }
 
 .itemContainer {
   background-color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.itemDetailContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.itemDetail {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  background-color: wheat;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 5px;
+  margin-top: 20px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+
+}
+
+ ul {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  padding: 0;
+}
+
+.itemCounter {
+  background-color: rgb(213, 245, 179);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+button {
+  border-radius: 3px;
+}
+
+li {
+  list-style-type: none;
+  text-align: center;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.itemInCart {
+  width: 100;
+}
+
+.Item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: wheat;
+  border-radius: 10px;
+  padding: 5px;
+  width: 25%;
+  margin: 5px;
+  margin-top: 20px;
+}
+
+img{
+  width: 100%;
+  border-radius: 5px;
+}
+
+.formContainer {
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  background-color: wheat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 @keyframes App-logo-spin {

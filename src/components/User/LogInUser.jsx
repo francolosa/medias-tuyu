@@ -1,25 +1,29 @@
-import React, { useContext } from 'react';
-import UserContextProvider, { UserContext } from '../../context/userContext';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState, useEffect } from 'react';
+import { UserContext } from '../../context/userContext';
 
 export default function LogInUser() {
-    const { logIn, user } = useContext(UserContext)
+    const { logIn } = useContext(UserContext)
 
-    const onLogin = async (evt) => { 
+    const [user, setUser] = useState();
+    const [pwd, setPwd] = useState();
+    const [session, setSession] = useState();
+
+    const handleUserChange = event => setUser(event.target.value);
+    const handlePwdChange = event => setPwd(event.target.value);
+    const handleSessionChange = event => setSession(event.target.value);
+      
+    const onLogin = async (evt) => {
         evt.preventDefault()
-        let emailUserLogin = document.getElementById('emailUserLogin').value
-        let passwordUserLogin = document.getElementById('passwordUserLogin').value
-        let session = document.getElementById('noCerrarSesion')
-        await logIn(emailUserLogin, passwordUserLogin, session)
+        logIn(user, pwd, session)
+    }
 
-     }
-
-    return <div className="userLogin">
-        <form>
-            <label>Email:<input type="email" name="email" id="emailUserLogin" /></label><br />
-            <label>Contraseña:<input type="password" name="password" id="passwordUserLogin" /></label><br></br>
-            <label>Mantener sesión iniciada<input type="checkbox" name="noCerrarSesion"  id="noCerrarSesion"></input></label><br></br>
-            <button onClick={onLogin}><Link to="/">Iniciar Sesión</Link></button>
-        </form>
+    return <div className="formContainer">
+        <h1>iniciar sesión</h1>
+        <form onSubmit={onLogin}>
+            <label>Email:</label><input type="email" name="email" id="emailUserLogin" onChange={handleUserChange} /><br />
+            <label>Contraseña:</label><input type="password" name="password" id="passwordUserLogin" onChange={handlePwdChange} /><br></br>
+            <label>Mantener sesión iniciada</label><input type="checkbox" name="noCerrarSesion" id="noCerrarSesion" onChange={handleSessionChange}></input><br></br>
+            <button type="submit">Iniciar Sesión</button>
+        </form >
     </div>
 }

@@ -28,7 +28,6 @@ export default function CartContextProvider({ children }){
     const isInCart = (item) => {
         let state = false;
         cart.find(element => item.id === element.id ? state = true: state = false );
-        console.log(state)
         return state;
     }
 

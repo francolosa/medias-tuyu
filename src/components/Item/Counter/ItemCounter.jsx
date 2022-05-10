@@ -20,8 +20,9 @@ export default function ItemCounter({ item }) {
                 <button onClick={aumentarContador}>+</button>
                 {counter}
                 <button onClick={disminuirContador}>-</button>
-            </div>
             <AddToCart item={item} quantity={counter} />
+            </div>
+
         </>
     )
 

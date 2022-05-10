@@ -1,41 +1,56 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { UserContext } from './context/userContext';
+import { AuthContext } from './context/authContext';
 import { useContext } from 'react';
 
 //COMPONENTS
 import React from 'react';
 //NAV BAR
 import NavBar from './components/NavBar';
-//ITEM
-import ItemDetail from './components/Item/ItemDetail'
-import ItemListContainer from './components/Item/ItemListContainer';
+import NavBarAdmin from './components/Admin/NavBarAdmin';
+
 //CART
 import Cart from './components/Cart/Cart';
 //USER
+//ITEM
+import ItemDetail from './components/Item/ItemDetail'
+import ItemListContainer from './components/Item/ItemListContainer';
 import LogInUser from './components/User/LogInUser';
 import ProfileUser from './components/User/ProfileUser'
 import CreateUser from './components/User/CreateUser'
 //ADMIN
 import UpLoadProduct from './components/Admin/UpLoadProduct'
 import UpDateProduct from './components/Admin/UpDateProduct'
+import CreateAdmin from './components/Admin/CreateAdmin'
+import LogInAdmin from './components/Admin/LogInAdmin';
+import ProfileAdmin from './components/Admin/ProfileAdmin'
 
 //FUNCTION
 function App() {
-  const { admin } = useContext(UserContext)
+  const { online, admin } = useContext(AuthContext);
+  //console.log(onAuthStateChanged())
 
   return (
     <BrowserRouter>
+      {admin ? <NavBarAdmin />: ""}
       <NavBar />
+
       <Routes>
         <Route path="/" element={<ItemListContainer/>} />
+        
         <Route path="/cart" element={<Cart/>} />
-        <Route path="/user/logIn" element={<LogInUser/>} />
-        <Route path="/user/signIn" element={<CreateUser/>} />
-        <Route path="/user/profile" element={<ProfileUser/>} />
+        
+        {online ? "" : <Route path="/user/logIn" element={<LogInUser/>} /> }
+        {online ? "" : <Route path="/user/signIn" element={<CreateUser/>} /> }
+        {online ? "" : <Route path="/user/profile" element={<ProfileUser/>} /> }
+        
+        {online ? "" : <Route path="/admin/logIn" element={<LogInAdmin/>} /> }
+        {online && admin ? <Route path="/admin/profile" element={<ProfileAdmin/>} /> : "" }
+        {online && admin ? <Route path="/admin/signIn" element={<CreateAdmin/>} /> : "" }
+        {online && admin ? <Route path="/admin/products/upLoad" element={<UpLoadProduct/>} /> : " "}
+        {online && admin ? <Route path="/admin/products/upDate/:productId" element={<UpDateProduct/>} /> : ""}
+
         <Route path="/products" element={<ItemListContainer/>} />
-        { admin ? <Route path="/products/upLoad" element={<UpLoadProduct/>}  /> : console.log("Ruta invalida") }
-         <Route path="/products/upDate/:productId" element={<UpDateProduct/>} /> 
         <Route path="/product/:productId" element={<ItemDetail/>} />
       </Routes>
     </BrowserRouter>

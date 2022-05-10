@@ -5,14 +5,18 @@ import ItemInCart from '../Cart/ItemInCart';
 export default function Cart() {
     const { cart } = useContext(CartContext);
     return (
-        <>
-            <div className='itemListContainer'>
-                <h1>Carrito</h1>
-                {cart.map(function (item) {
-                    return <ItemInCart item={item} />
-                })}
-            </div>
-        </>
+        <><div className="cart">
+            <h1>carrito</h1>
+            <div className='carritoContainer'>
+                
+                    {cart.map(function (item) {
+
+                        return <ItemInCart item={item} />
+                        
+
+                    })}
+                </div>
+        </div></>
     )
 
 }

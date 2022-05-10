@@ -17,13 +17,14 @@ export default function ItemListContainer() {
             })).catch(error => { console.log(error) })
     }, []);
 
-    return (
+    return (<>            <h1>productos</h1>
+  
         <div className='itemListContainer'>
-            <h1>Productos</h1>
             {products.map(function (item) {
                 return <Item item={item} />
             })}
         </div>
+        </>
 
     )
 }

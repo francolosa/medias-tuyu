@@ -4,16 +4,22 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import UserContextProvider from './context/userContext';
+import AdminContextProvider from './context/adminContext';
 import CartContextProvider from './context/cartContext';
+import AuthContextProvider from './context/authContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <AuthContextProvider>
+  <AdminContextProvider>
     <UserContextProvider>
       <CartContextProvider>
     <App />
     </CartContextProvider>
     </UserContextProvider>
+    </AdminContextProvider>
+    </AuthContextProvider>
   </React.StrictMode>
 );
 
