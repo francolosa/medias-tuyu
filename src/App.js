@@ -24,6 +24,7 @@ import UpDateProduct from './components/Admin/UpDateProduct'
 import CreateAdmin from './components/Admin/CreateAdmin'
 import LogInAdmin from './components/Admin/LogInAdmin';
 import ProfileAdmin from './components/Admin/ProfileAdmin'
+import ModifyProducts from './components/Admin/Item/ModifyProductsContainer'
 
 //FUNCTION
 function App() {
@@ -47,6 +48,7 @@ function App() {
         {online ? "" : <Route path="/admin/logIn" element={<LogInAdmin/>} /> }
         {online && admin ? <Route path="/admin/profile" element={<ProfileAdmin/>} /> : "" }
         {online && admin ? <Route path="/admin/signIn" element={<CreateAdmin/>} /> : "" }
+        {online && admin ? <Route path="/admin/products/modify" element={<ModifyProducts/>} /> : " "}
         {online && admin ? <Route path="/admin/products/upLoad" element={<UpLoadProduct/>} /> : " "}
         {online && admin ? <Route path="/admin/products/upDate/:productId" element={<UpDateProduct/>} /> : ""}
 

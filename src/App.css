@@ -130,6 +130,15 @@ form {
   border-radius: 5px;
 }
 
+.generarOrden {
+  margin: 50px;
+  padding: 10px;
+  background-color: rgb(97, 172, 97);
+  color: wite;
+  font-size: 20px
+  ;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

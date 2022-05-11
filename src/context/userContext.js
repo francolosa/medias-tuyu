@@ -4,7 +4,6 @@ import { getAuth, signOut, signInWithEmailAndPassword, createUserWithEmailAndPas
 export const UserContext = createContext([]);
 
 export default function UserContextProvider({ children }) {
-    const [user, setUser] = useState([]);
 
     const logIn = async (emailUserLogin, passwordUserLogin) => {
         const auth = getAuth();
@@ -12,7 +11,6 @@ export default function UserContextProvider({ children }) {
             .then((userCredential) => {
                 // Loged in
                 const user = userCredential.user;
-                setUser(user.email);
                 console.log("Se inició la sesion del usuario: " + user.email);
                  window.location.assign("/")
             })
@@ -28,7 +26,6 @@ export default function UserContextProvider({ children }) {
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
-
                 console.log("Se registró el usuario: " + user.email)
             })
             .catch((error) => {
@@ -38,13 +35,14 @@ export default function UserContextProvider({ children }) {
     }
 
     const logOut = async () => {
+        //Logged out
         const auth = getAuth()
         signOut(auth).then(()=>{
             console.log("Se cerró la sesión del usuario")
         })
     };
 
-    return (<UserContext.Provider value={{ logIn, signIn, user, logOut }}>
+    return (<UserContext.Provider value={{ logIn, signIn, logOut }}>
         {children}
     </UserContext.Provider>
     )
