@@ -18,7 +18,7 @@ export default function Item({ item }) {
             </div>
                 <Link to={`/product/${item.id}`}><img src={item.img} alt="" /></Link>
            
-            <ItemCounter item={item} />
+                {item.stock === 0 ? <p>Articulo sin stock!</p> : <ItemCounter item={item} />}
             { admin ? <button onClick={onEliminarItem}>Eliminar item</button> : ""}
         </div>
     )

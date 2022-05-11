@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, doc, collection, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from "../firebase";
 import { getAuth } from 'firebase/auth';
 import { UserContext } from './userContext'
@@ -49,6 +49,18 @@ export default function CartContextProvider({ children }){
         cart.find(element => item.id === element.id ? state = true: state = false );
         return state;
     }
+    
+    const actualizarStockItems = async() => {
+        await cart.forEach(element => {
+            const itemRef = doc(db, 'items', element.id)
+            getDoc(itemRef).then((snapshot)=>{
+                updateDoc(itemRef, {
+                    "stock": snapshot.data().stock-element.quantity 
+                })
+              })
+                 
+        });
+    }
 
     useEffect(()=>{
         let precioTotal = 0;
@@ -73,10 +85,10 @@ export default function CartContextProvider({ children }){
 
         addDoc(orders, newOrder);
         console.log("Se generó una nueva orden: ",newOrder)
-
-        // esto debería ocurrir una vez acreditado el pago:
+        actualizarStockItems();
+        clearCart();
+        window.location.assign("/cart/checkout")
         
-
 
     }
     console.log(cart)

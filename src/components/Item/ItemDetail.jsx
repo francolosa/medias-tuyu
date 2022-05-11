@@ -50,7 +50,7 @@ export default function ItemDetail() {
             </ul>
                 { admin ? <button onClick={onEditarItem}> Editar Item </button> : ""}
                 { admin ? <button onClick={onEliminarItem}>Eliminar Item</button> : ""}
-            <ItemCounter item={item} />
+            {item.stock = 0 ? <p>Articulo sin stock!</p> : <ItemCounter item={item} />}
         </div>
         </div>
     )
