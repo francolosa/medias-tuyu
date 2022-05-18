@@ -139,6 +139,25 @@ form {
   ;
 }
 
+.adminItemContainer{
+  display:flex;
+  flex-direction: row;
+}
+
+.adminItem{
+  display:flex;
+  justify-content: space-around;
+  flex-direction: row;
+  
+}
+
+.adminImg{
+  width: 100px;
+}
+
+.buttonAdmin{
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

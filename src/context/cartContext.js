@@ -1,41 +1,41 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { addDoc, doc, collection, updateDoc, getDoc } from 'firebase/firestore';
+import { addDoc, doc, collection, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { db } from "../firebase";
-import { getAuth } from 'firebase/auth';
-import { UserContext } from './userContext'
+import { getAuth } from 'firebase/auth';
+import { UserContext } from './userContext'
 export const CartContext = createContext([]);
 
-const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart') , "[]");
+const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'), "[]");
 
-export default function CartContextProvider({ children }){
-    const [ cart, setCart ] = useState(cartFromLocalStorage);
-    const [ totalPrice, setTotalPrice ] = useState()
+export default function CartContextProvider({ children }) {
+    const [cart, setCart] = useState(cartFromLocalStorage);
+    const [totalPrice, setTotalPrice] = useState()
     const { user } = useContext(UserContext);
 
-    useEffect(()=>{
+    useEffect(() => {
         const data = localStorage.getItem('cart');
-        if(data){
+        if (data) {
             setCart(JSON.parse(data))
         }
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         const cartJSON = JSON.stringify(cart)
         localStorage.setItem('cart', cartJSON)
-    })  
+    })
 
     //USER
     const addToCart = (item, quantity) => {
-         if(!isInCart(item) && (quantity > 0)){ setCart([...cart, {...item, quantity: quantity }])}
+        if (!isInCart(item) && (quantity > 0)) { setCart([...cart, { ...item, quantity: quantity }]) }
     }
 
-    const deleteFromCart = (item) => setCart(cart.filter(element =>  item.id !== element.id  ));
-    
+    const deleteFromCart = (item) => setCart(cart.filter(element => item.id !== element.id));
+
     const modifyQuantInCart = (item, counter) => {
-        
-        for(var i=0;i<cart.length;i++){
-            if(cart[i].id == item.id){
-                 cart[i].quantity = counter
+
+        for (var i = 0; i < cart.length; i++) {
+            if (cart[i].id == item.id) {
+                cart[i].quantity = counter
             }
         }
         setCart([...cart])
@@ -46,35 +46,42 @@ export default function CartContextProvider({ children }){
 
     const isInCart = (item) => {
         let state = false;
-        cart.find(element => item.id === element.id ? state = true: state = false );
+        cart.find(element => item.id === element.id ? state = true : state = false);
         return state;
     }
-    
-    const actualizarStockItems = async() => {
+
+    const actualizarStockItems = async () => {
         await cart.forEach(element => {
             const itemRef = doc(db, 'items', element.id)
-            getDoc(itemRef).then((snapshot)=>{
+            getDoc(itemRef).then((snapshot) => {
                 updateDoc(itemRef, {
-                    "stock": snapshot.data().stock-element.quantity 
+                    "stock": snapshot.data().stock - element.quantity
                 })
-              })
-                 
+            })
+
         });
     }
 
-    useEffect(()=>{
+    const vincularUserConOrder = async (orderId) => {        
+        const auth = getAuth()
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        await updateDoc(userRef, {
+            orders: arrayUnion(orderId)
+        })
+    }
+
+    useEffect(() => {
         let precioTotal = 0;
         cart.forEach(element => {
-            precioTotal = precioTotal+element.precio*element.quantity
+            precioTotal = precioTotal + element.precio * element.quantity
         });
         setTotalPrice(precioTotal)
 
     })
 
     const generarOrden = () => {
-        const orders = collection(db, 'orders');
         const auth = getAuth()
-        console.log(user)
+        const orders = collection(db, 'orders');
         let newOrder = {
             userUid: auth.currentUser.uid,
             userEmail: auth.currentUser.email,
@@ -82,19 +89,19 @@ export default function CartContextProvider({ children }){
             totalPrice: totalPrice,
             items: [...cart]
         }
+         addDoc(orders, newOrder).then((docRef) => {
+            vincularUserConOrder(docRef.id)
+            })
 
-        addDoc(orders, newOrder);
-        console.log("Se generó una nueva orden: ",newOrder)
-        actualizarStockItems();
+        console.log("Se generó una nueva orden: ", newOrder)
+         actualizarStockItems();
         clearCart();
-        window.location.assign("/cart/checkout")
-        
 
     }
     console.log(cart)
 
-    return ( <CartContext.Provider value={{ cart, setCart, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
+    return (<CartContext.Provider value={{ cart, setCart, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
         {children}
-        </CartContext.Provider>
+    </CartContext.Provider>
     )
 }

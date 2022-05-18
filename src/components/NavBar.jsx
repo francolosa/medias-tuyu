@@ -19,6 +19,7 @@ export default function NavBar() {
         <Link to="/" >home</Link>
         <Link to="/products" >productos</Link>
         {cart.length > 0 ? <Link to="/cart" >carrito ({cart.length})</Link> : ""}
+        {online ? <Link to="/user/profile/" >mi cuenta</Link> : ""}
         {online ? <Link to="/" onClick={onLogOut}  >Cerrar sesión</Link> : <Link to="/user/logIn"  >iniciar sesión</Link>}
         {online ? "" : <Link to="/user/signIn" >crear cuenta</Link>}
       </nav>
