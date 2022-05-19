@@ -17,12 +17,16 @@ export default function Cart() {
             <h1>carrito</h1>
             <div className='carritoContainer'>
                 
-                    {cart.map(function (item) {
+                    {
+                    
+                    Array.isArray(cart) ? 
+                    cart.map(function (item) {
 
                         return <ItemInCart item={item} />
                         
 
-                    })}
+                    }) : ""}
+                    
                     <h3>precio total: {totalPrice}</h3>
                     <button type="button" className="vaciarCarrito" onClick={onVaciarCarrito}>Vaciar carrito</button>
                     <button type="button" className="generarOrden" onClick={onGenerarOrden}>Generar Orden</button>

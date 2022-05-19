@@ -13,6 +13,7 @@ export default function NavBar() {
   const onLogOut = (evt) => { return evt.preventDefault(), logOut() }
 
   return (
+     
     
       <nav className="navBar">
       
