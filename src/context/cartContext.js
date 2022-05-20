@@ -5,7 +5,7 @@ import { getAuth } from 'firebase/auth';
 import { UserContext } from './userContext'
 export const CartContext = createContext([]);
 
-//const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'), "[]");
+const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'), "[]");
 
 
 
@@ -114,11 +114,7 @@ export default function CartContextProvider({ children }) {
         }
     }
 
-    /*
-    * Function actualizarStockItems
-    *
-    */
-    async function actualizarStockItems() {
+    const actualizarStockItems = async () => {
         await cart.forEach(element => {
             const itemRef = doc(db, 'items', element.id);
             getDoc(itemRef).then((snapshot) => {

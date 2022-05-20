@@ -15,8 +15,8 @@ export default function Cart() {
     return (
         <div className="cart">
             <h1>carrito</h1>
-            <div className="carritoContainer">
-                <table >
+            <div className='carritoContainer'>
+                <table>
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -28,7 +28,6 @@ export default function Cart() {
                             <th>Acción</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {
                         Array.isArray(cart) ? 
