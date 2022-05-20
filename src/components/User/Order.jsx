@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Item from './Item';
+import OrderItem from './OrderItem';
 
 export default function Order({ order }) {
     const [items, setItems] = useState([])
@@ -13,6 +13,12 @@ export default function Order({ order }) {
                 <li> EMAIL: {order.userEmail}</li>
                 <li> FECHA: {order.fecha}</li>
                 <li> PRECIO TOTAL: {order.totalPrice}</li>
+                <ul>{
+                    order.items.map((item)=>{
+                        return <OrderItem item={item}/>
+                    })
+                    }
+                </ul>
             </div>
         </div>
     )

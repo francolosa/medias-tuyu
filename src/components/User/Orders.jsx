@@ -26,7 +26,7 @@ export default function Orders() {
         */
             getOrders()
         
-        })
+        },[])
 
         return <>
             <h1>Mis Ordenes</h1>
