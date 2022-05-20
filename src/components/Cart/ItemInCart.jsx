@@ -5,7 +5,7 @@ import ItemInCartCounter from './ItemInCartCounter';
 export default function ItemInCart({ item }) {
 
     return (
-        <div className="itemInCart" id={item.id}>
+        <tr className="itemInCart" id={item.id}>
                 <td>{item.nombre}</td>
                 <td>{item.color}</td>
                 <td>{item.talle}</td>
@@ -13,6 +13,6 @@ export default function ItemInCart({ item }) {
                 <td>{item.precio}</td>
                 <td>{item.precio * item.quantity}</td>
                 <td><DeleteFromCart item={item} /></td>
-        </div>
+        </tr>
     )
 }
