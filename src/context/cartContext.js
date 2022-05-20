@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useReducer, useState, useEffect, useContext } from 'react';
 import { addDoc, doc, collection, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { db } from "../firebase";
 import { getAuth } from 'firebase/auth';
@@ -7,72 +7,125 @@ export const CartContext = createContext([]);
 
 //const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'), "[]");
 
+
+
 export default function CartContextProvider({ children }) {
-    const [cart, setCart] = useState([]);
+    
+    const [cart, cartDispach ] = useReducer( cartReducer, [], initCart );
+
     const [totalPrice, setTotalPrice] = useState()
     const { user } = useContext(UserContext);
 
-    useEffect(() => {
-        const data = JSON.parse(localStorage.getItem('cart'));
-        if (data) {
-            console.log(data)
-            setCart(data)
+    function initCart() {
+        const localData = localStorage.getItem('cart');
+        if( 'undefined' != typeof localData ) {
+            return JSON.parse( localData );
         }
-    }, [])
-    
+        return [];
+    }  
+
+    function cartReducer( cart, action ) {
+        switch( action.type ) {
+            case 'add':
+                return [...cart,action.payload];
+            case 'delete':
+                return cart.filter( element => action.item_id !== element.id );
+            case 'updateQuantity':
+                for (var i = 0; i < cart.length; i++) {
+                    if (cart[i].id == action.item_id ) {
+                        cart[i].quantity = action.quantity;
+                        return [...cart];
+                    }
+                }
+                
+            case 'clear':
+                return [];
+        }  
+    } 
+
     useEffect(() => {
         const cartJSON = JSON.stringify(cart)
         localStorage.setItem('cart', cartJSON)
-    })
+    },[cart]);
 
-    //USER
-    const addToCart = (item, quantity) => {
-        if (!isInCart(item) && (quantity > 0)) { 
-            //setCart([...cart, { ...item, quantity: quantity }]);
-          //  setCart([...cart, item]);
-            //localStorage.setItem('cart', JSON.stringify(cart));
+    useEffect(() => {
+        let precioTotal = 0;
+        if( Array.isArray(cart)){
+            cart.forEach(element => {
+                precioTotal = precioTotal + element.precio * element.quantity
+            });
+        }
+        setTotalPrice(precioTotal)
 
-            setCart( ( prevState)  => ({
-                ...prevState,
-                item
-            }));
-            //localStorage.setItem('cart', JSON.stringify(cart));
+    });
 
+
+    /*
+    * Function addToCart
+    *
+    */
+    function addToCart( item, quantity ) {
+        if ( ! isInCart( item ) && ( quantity > 0) ) {
+            cartDispach( {
+                type:'add', payload: { ...item, quantity: quantity } } );
         }
     }
 
+    /*
+    * Function deleteFromCart
+    *
+    */
+    function deleteFromCart( item ) {
+        cartDispach( {type:'delete',item_id: item.id } );
+    }
 
-    const deleteFromCart = (item) => setCart(cart.filter(element => item.id !== element.id));
+    /*
+    * Function deleteFromCart
+    *
+    */
+   function modifyQuantInCart(item, newQuantity ) {
 
-    const modifyQuantInCart = (item, counter) => {
+        cartDispach({ 
+            type: 'updateQuantity', 
+            item_id: item.id,
+            quantity: newQuantity
+         });
 
-        for (var i = 0; i < cart.length; i++) {
-            if (cart[i].id == item.id) {
-                cart[i].quantity = counter
-            }
+    }
+
+    /*
+    * Function deleteFromCart
+    *
+    */
+   function clearCart() {
+        const emptyCart = [];
+        cartDispach({ type: 'clear' });
+    }
+
+    /*
+    * Function isInCart
+    *
+    */
+    function isInCart(item) {
+        if (Array.isArray(cart) && cart.length > 0) {
+            return cart.find(element => item.id === element.id) ? true : false;
+        } else {
+            return false;
         }
-        setCart([...cart])
-
     }
 
-    const clearCart = () => setCart([]);
-
-    const isInCart = (item) => {
-        let state = false;
-        console.log(typeof(cart))
-        cart.find(element => item.id === element.id ? state = true : state = false);
-        return state;
-    }
-
-    const actualizarStockItems = async () => {
+    /*
+    * Function actualizarStockItems
+    *
+    */
+    async function actualizarStockItems() {
         await cart.forEach(element => {
-            const itemRef = doc(db, 'items', element.id)
+            const itemRef = doc(db, 'items', element.id);
             getDoc(itemRef).then((snapshot) => {
                 updateDoc(itemRef, {
                     "stock": snapshot.data().stock - element.quantity
-                })
-            })
-
+                });
+            });
         });
     }
 
@@ -84,17 +137,7 @@ export default function CartContextProvider({ children }) {
         })
     }
 
-    useEffect(() => {
-        let precioTotal = 0;
-        if( Array.isArray(cart)){
-            cart.forEach(element => {
-                precioTotal = precioTotal + element.precio * element.quantity
-            });
-        }
-        setTotalPrice(precioTotal)
-
-    })
-
+    
     const generarOrden = () => {
         const auth = getAuth()
         const orders = collection(db, 'orders');
@@ -114,9 +157,7 @@ export default function CartContextProvider({ children }) {
         clearCart();
 
     }
-    console.log(cart)
-
-    return (<CartContext.Provider value={{ cart, setCart, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
+    return (<CartContext.Provider value={{ cart, cartDispach, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
         {children}
     </CartContext.Provider>
     )

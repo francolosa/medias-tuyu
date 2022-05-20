@@ -13,25 +13,48 @@ export default function Cart() {
         await generarOrden()
     }
     return (
-        <><div className="cart">
+        <div className="cart">
             <h1>carrito</h1>
-            <div className='carritoContainer'>
-                
-                    {
-                    
-                    Array.isArray(cart) ? 
-                    cart.map(function (item) {
+            <div className="carritoContainer">
+                <table >
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Colores</th>
+                            <th>Talles</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unidad</th>
+                            <th>Precio Total</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
 
-                        return <ItemInCart item={item} />
-                        
-
-                    }) : ""}
+                    <tbody>
+                        {
+                        Array.isArray(cart) ? 
+                            cart.map(function (item) {
+                            return <ItemInCart item={item} />
+                        }) : ""}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <h3>$ {totalPrice}</h3>
+                            </td>
+                            <td> { totalPrice > 0 && <button type="button" className="vaciarCarrito" onClick={onVaciarCarrito}>Vaciar carrito</button> } </td>
+                        </tr>
+                    </tfoot>
+                </table>
                     
-                    <h3>precio total: {totalPrice}</h3>
-                    <button type="button" className="vaciarCarrito" onClick={onVaciarCarrito}>Vaciar carrito</button>
-                    <button type="button" className="generarOrden" onClick={onGenerarOrden}>Generar Orden</button>
-                </div>
-        </div></>
+                { totalPrice > 0 && <button type="button" className="generarOrden" onClick={onGenerarOrden}>Generar Orden</button> }
+
+            </div>
+        </div>
     )
 
 }
