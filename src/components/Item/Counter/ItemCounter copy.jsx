@@ -1,27 +1,18 @@
-import React, { useReducer } from 'react';
+import React, { useState } from 'react';
 import AddToCart from '../../Cart/AddToCart';
 
 export default function ItemCounter({ item }) {
 
-    const [counter, setCounterReducer ] = useReducer( counterReducer, 0);
-
+    let [counter, setCounter] = useState(0);
+    
     let aumentarContador = (evt) => {
         evt.preventDefault()
-        return counter < item.stock ? setCounterReducer({ type:'plus', payload: counter })        : "";
+        return counter < item.stock ? setCounter(++counter) : "";
     }
     let disminuirContador = (evt) => {
         evt.preventDefault()
-        return counter > 0 ? setCounterReducer({ type:'minus', payload: counter}) : "";
+        return counter > 0 ? setCounter(--counter) : "";
     }
- 
-    function counterReducer( counter, action ) {
-        switch( action.type ) {
-            case 'plus':
-                return (counter+1);
-            case 'minus':
-                return (counter-1);
-        }  
-    } 
 
     return (
         <>
