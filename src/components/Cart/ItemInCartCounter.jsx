@@ -6,11 +6,12 @@ import { CartContext } from '../../context/cartContext';
 export default function ItemInCartCounter({ item }) {
     let [counter, setCounter] = useState(item.quantity);
 
-    const { modifyQuantInCart } = useContext(CartContext);
+    const { modifyQuantInCart, cartCounter, setCartCounter } = useContext(CartContext);
 
     let aumentarContador = (evt) => {
         evt.preventDefault()
         if(counter < item.stock){
+        setCartCounter(cartCounter+1)
         setCounter(++counter)
         modifyQuantInCart(item, counter)
         }
@@ -19,6 +20,7 @@ export default function ItemInCartCounter({ item }) {
     let disminuirContador = (evt) => {
         evt.preventDefault()
         if(counter > 0){
+         setCartCounter(cartCounter-1)
          setCounter(--counter)
          modifyQuantInCart(item, counter)
         };

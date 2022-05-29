@@ -5,24 +5,27 @@ import { getAuth } from 'firebase/auth';
 import { UserContext } from './userContext'
 export const CartContext = createContext([]);
 
-const cartFromLocalStorage = JSON.parse(localStorage.getItem('cart'), "[]");
-
-
-
 export default function CartContextProvider({ children }) {
     
-    const [cart, cartDispach ] = useReducer( cartReducer, [], initCart );
-
+    const [cart, cartDispach ] = useReducer( cartReducer, []);
+    const [cartCounter, setCartCounter ] = useState(initCounter)
     const [totalPrice, setTotalPrice] = useState()
     const { user } = useContext(UserContext);
 
     function initCart() {
         const localData = localStorage.getItem('cart');
+        console.log(localData)
         if( 'undefined' != typeof localData ) {
             return JSON.parse( localData );
         }
         return [];
     }  
+    function initCounter(){
+        const localData = localStorage.getItem('cartCounter');
+        if( 'undefined ' != typeof localData ){
+            return JSON.parse( localData )
+        }
+    }
 
     function cartReducer( cart, action ) {
         switch( action.type ) {
@@ -46,7 +49,9 @@ export default function CartContextProvider({ children }) {
     useEffect(() => {
         const cartJSON = JSON.stringify(cart)
         localStorage.setItem('cart', cartJSON)
-    },[cart]);
+        const cartCounterJSON = JSON.stringify(cartCounter)
+        localStorage.setItem('cartCounter', cartCounterJSON)
+    });
 
     useEffect(() => {
         let precioTotal = 0;
@@ -66,6 +71,7 @@ export default function CartContextProvider({ children }) {
     */
     function addToCart( item, quantity ) {
         if ( ! isInCart( item ) && ( quantity > 0) ) {
+            setCartCounter(cartCounter+quantity)
             cartDispach( {
                 type:'add', payload: { ...item, quantity: quantity } } );
         }
@@ -76,6 +82,7 @@ export default function CartContextProvider({ children }) {
     *
     */
     function deleteFromCart( item ) {
+        setCartCounter(cartCounter-item.quantity)
         cartDispach( {type:'delete',item_id: item.id } );
     }
 
@@ -98,6 +105,7 @@ export default function CartContextProvider({ children }) {
     *
     */
    function clearCart() {
+        setCartCounter(0)
         const emptyCart = [];
         cartDispach({ type: 'clear' });
     }
@@ -153,7 +161,7 @@ export default function CartContextProvider({ children }) {
         clearCart();
 
     }
-    return (<CartContext.Provider value={{ cart, cartDispach, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
+    return (<CartContext.Provider value={{ cart, cartCounter, setCartCounter, cartDispach, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
         {children}
     </CartContext.Provider>
     )
