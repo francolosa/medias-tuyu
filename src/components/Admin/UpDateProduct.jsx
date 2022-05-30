@@ -13,7 +13,7 @@ export default function UpDateProduct() {
     const [precio, setPrecio] = useState();
     const [stock, setStock] = useState();
     const [talle, setTalle] = useState();
-    const [image, setImage] = useState();
+    const [img, setImage] = useState();
     const [cambiarImagen, setCambiarImagen] = useState(false);
 
     const handleNombreChange = event => setNombre(event.target.value);
@@ -22,8 +22,11 @@ export default function UpDateProduct() {
     const handlePrecioChange = event => setPrecio(event.target.value);
     const handleStockChange = event => setStock(event.target.value);
     const handleTalleChange = event => setTalle(event.target.value);
-    const handleImageChange = event => setImage(event.target.files[0]);
-
+    const handleImageChange = event => {
+        setCambiarImagen(true);
+        setImage(event.target.files[0]);
+    }
+    
     useEffect(() => {
         const ref = doc(db, "items", productId);
         getDoc(ref)
@@ -35,7 +38,7 @@ export default function UpDateProduct() {
                     setPrecio(snapshot.data().precio)
                     setStock(snapshot.data().stock)
                     setTalle(snapshot.data().talle)
-                    setImage(snapshot.data().image)
+                    setImage(snapshot.data().img)
                 }
             }).catch(error => {
                 console.log(error)
@@ -46,12 +49,16 @@ export default function UpDateProduct() {
     const onUpdate = async (evt) => {
         evt.preventDefault()
         const item = doc(db, 'items', productId);
-        const storage = getStorage();
-        const imageName = (+ new Date()).toString(36);
-        const storageRef = ref(storage, `items/${imageName}`);
-
-        const uploadTask = await uploadBytes(storageRef, image);
-        const pictureURL = await getDownloadURL(uploadTask.ref);
+        let pictureURL;
+        if(cambiarImagen === true){
+            const storage = getStorage();
+            const imageName = (+ new Date()).toString(36);
+            const storageRef = ref(storage, `items/${imageName}`);
+            const uploadTask = await uploadBytes(storageRef, img);    
+            pictureURL = await getDownloadURL(uploadTask.ref);
+        } else {
+            pictureURL = img;
+        }
 
         let newItem = {
             nombre: nombre,
@@ -86,7 +93,7 @@ export default function UpDateProduct() {
             <input type="number" id="stock" value={stock} onChange={handleStockChange}></input><br />
             <label for="talle">Talle</label>
             <input type="text" id="talle" value={talle} onChange={handleTalleChange}></input><br />
-            <img src={image} width="150px"></img><br />
+            <img src={img} width="150px" className="imgEdit"></img><br />
             {cambiarImagen ? <input type="file" id="image" onChange={handleImageChange}></input> : <button onClick={onCambiarImagen}>Cambiar Imagen</button>}
             <button type="submit">Actualizar item</button>
         </form>

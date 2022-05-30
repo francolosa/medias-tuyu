@@ -4,8 +4,6 @@ import OrderItem from './OrderItem';
 export default function Order({ order }) {
     const [items, setItems] = useState([])
 
-
-
     return (
         <div className='Order'>
             <div className='description'>

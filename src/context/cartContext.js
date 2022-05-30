@@ -7,7 +7,7 @@ export const CartContext = createContext([]);
 
 export default function CartContextProvider({ children }) {
     
-    const [cart, cartDispach ] = useReducer( cartReducer, []);
+    const [cart, cartDispach ] = useReducer( cartReducer, [], initCart);
     const [cartCounter, setCartCounter ] = useState(initCounter)
     const [totalPrice, setTotalPrice] = useState()
     const { user } = useContext(UserContext);
@@ -15,7 +15,7 @@ export default function CartContextProvider({ children }) {
     function initCart() {
         const localData = localStorage.getItem('cart');
         console.log(localData)
-        if( 'undefined' != typeof localData ) {
+        if( 'null' != localData ) {
             return JSON.parse( localData );
         }
         return [];
@@ -47,11 +47,13 @@ export default function CartContextProvider({ children }) {
     } 
 
     useEffect(() => {
+        console.log(cart)
         const cartJSON = JSON.stringify(cart)
+        console.log(cart)
         localStorage.setItem('cart', cartJSON)
         const cartCounterJSON = JSON.stringify(cartCounter)
         localStorage.setItem('cartCounter', cartCounterJSON)
-    });
+    },[]);
 
     useEffect(() => {
         let precioTotal = 0;

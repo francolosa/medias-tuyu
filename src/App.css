@@ -12,6 +12,9 @@ a{
   font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.imgEdit{
+  width: 20%;
+}
 
 .itemListContainer {
   display: flex;
