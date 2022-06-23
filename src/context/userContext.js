@@ -40,6 +40,7 @@ export default function UserContextProvider({ children }) {
         signOut(auth).then(()=>{
             console.log("Se cerró la sesión del usuario")
         })
+        window.location.assign("/")
     };
 
     return (<UserContext.Provider value={{ logIn, signIn, logOut }}>

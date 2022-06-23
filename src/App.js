@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthContext } from './context/authContext';
 import { useContext } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 //COMPONENTS
 import React from 'react';

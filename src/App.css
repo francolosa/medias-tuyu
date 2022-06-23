@@ -12,6 +12,11 @@ a{
   font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
 
+.selector-for-some-widget {
+  box-sizing: content-box;
+}
+
+
 .imgEdit{
   width: 20%;
 }
@@ -158,8 +163,6 @@ form {
   width: 100px;
 }
 
-.buttonAdmin{
-}
 
 @keyframes App-logo-spin {
   from {
