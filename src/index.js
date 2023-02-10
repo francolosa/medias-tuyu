@@ -7,6 +7,7 @@ import UserContextProvider from './context/userContext';
 import AdminContextProvider from './context/adminContext';
 import CartContextProvider from './context/cartContext';
 import AuthContextProvider from './context/authContext';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

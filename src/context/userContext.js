@@ -29,6 +29,7 @@ export default function UserContextProvider({ children }) {
                 console.log("Se registró el usuario: " + user.email)
             })
             .catch((error) => {
+                console.log("asdasd")
                 const errorCode = error.code;
                 const errorMessage = error.message;
             });

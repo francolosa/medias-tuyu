@@ -163,6 +163,9 @@ form {
   width: 100px;
 }
 
+.passwordValidationOk{
+  color: green;
+}
 
 @keyframes App-logo-spin {
   from {

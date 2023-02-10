@@ -14,7 +14,8 @@ export default function LogInUser() {
       
     const onLogin = async (evt) => {
         evt.preventDefault()
-        logIn(user, pwd, session)
+        let response= logIn(user, pwd, session)
+        console.log(response)
     }
 
     return <div className="formContainer">
