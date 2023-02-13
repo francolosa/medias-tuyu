@@ -7,38 +7,59 @@ export default function UserContextProvider({ children }) {
 
     const logIn = async (emailUserLogin, passwordUserLogin) => {
         const auth = getAuth();
-        signInWithEmailAndPassword(auth, emailUserLogin, passwordUserLogin)
+        let response;
+        await signInWithEmailAndPassword(auth, emailUserLogin, passwordUserLogin)
             .then((userCredential) => {
-                // Loged in
                 const user = userCredential.user;
                 console.log("Se inició la sesion del usuario: " + user.email);
-                 window.location.assign("/")
+                response = {
+                    status: 200,
+                    state: user
+                }
             })
             .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
+                console.log(error)
+                response = {
+                    status: 400,
+                    state: error.message
+                }
             });
+            return response;
     }
 
-    const signIn = (userEmail, passwordUserCreate) => {
+    const signIn = async (userEmail, passwordUserCreate, repeatPassword) => {
         const auth = getAuth();
-        createUserWithEmailAndPassword(auth, userEmail, passwordUserCreate)
+        let response;
+        if (passwordUserCreate != repeatPassword) {
+            response = {
+                status: 600,
+                state: "las contraseñas no coinciden"
+            };
+        }
+        await createUserWithEmailAndPassword(auth, userEmail, passwordUserCreate)
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
                 console.log("Se registró el usuario: " + user.email)
+                response = {
+                    status: 200,
+                    state: user
+                }
             })
             .catch((error) => {
-                console.log("asdasd")
-                const errorCode = error.code;
-                const errorMessage = error.message;
+                console.log(error.message);
+                response = {
+                    status: 400,
+                    state: error.message
+                }
             });
+        return response;
     }
 
     const logOut = async () => {
         //Logged out
         const auth = getAuth()
-        signOut(auth).then(()=>{
+        signOut(auth).then(() => {
             console.log("Se cerró la sesión del usuario")
         })
         window.location.assign("/")
