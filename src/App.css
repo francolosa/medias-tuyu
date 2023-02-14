@@ -78,6 +78,14 @@ a{
   padding: 0;
 }
 
+tr > td{
+  text-align: center;
+}
+
+tr > th {
+  text-align: center;
+
+}
 
 .itemCounterText {
   display: flex;

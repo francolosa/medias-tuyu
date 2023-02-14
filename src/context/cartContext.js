@@ -14,7 +14,6 @@ export default function CartContextProvider({ children }) {
 
     function initCart() {
         const localData = localStorage.getItem('cart');
-        console.log(localData)
         if( 'null' != localData ) {
             return JSON.parse( localData );
         }
@@ -144,6 +143,10 @@ export default function CartContextProvider({ children }) {
     
     const generarOrden = () => {
         const auth = getAuth()
+        if(auth.currentUser == null){
+            return window.location.assign("user/logIn")
+        } 
+
         const orders = collection(db, 'orders');
         let newOrder = {
             userUid: auth.currentUser.uid,
@@ -158,8 +161,8 @@ export default function CartContextProvider({ children }) {
 
         console.log("Se generó una nueva orden: ", newOrder)
          actualizarStockItems();
-        clearCart();
-
+        clearCart()
+            
     }
     return (<CartContext.Provider value={{ cart, cartCounter, setCartCounter, cartDispach, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
         {children}

@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { CartContext } from '../../context/cartContext';
+import Button from 'react-bootstrap/Button';
 
 //import AddToCart from '../../Cart/AddToCart';
 
@@ -31,9 +32,9 @@ export default function ItemInCartCounter({ item }) {
     return (
         <>
             <div className='itemCounter'>
-                <button onClick={aumentarContador}>+</button>
-                {counter}
-                <button onClick={disminuirContador}>-</button>
+                <Button variant="light" onClick={aumentarContador}>+</Button>
+                <Button variant="light" disabled>{counter}</Button>
+                <Button variant="light" onClick={disminuirContador}>-</Button>
             </div>
         </>
     )
