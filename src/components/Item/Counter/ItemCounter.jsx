@@ -1,6 +1,7 @@
 import React, { useReducer, useContext } from 'react';
 import AddToCart from '../../Cart/AddToCart';
 import { CartContext } from '../../../context/cartContext';
+import Button from 'react-bootstrap/Button';
 
 export default function ItemCounter({ item }) {
 //    const { cartCounter, setCartCounter } = useContext(CartContext)
@@ -29,11 +30,12 @@ export default function ItemCounter({ item }) {
     return (
         <>
             <div className='itemCounter'>
-                <button onClick={aumentarContador}>+</button>
-                {counter}
-                <button onClick={disminuirContador}>-</button>
-            <AddToCart item={item} quantity={counter} />
+                <Button variant="light" onClick={aumentarContador}>+</Button>
+                <Button variant="light" disabled> {counter}</Button>
+                <Button variant="light" onClick={disminuirContador}>-</Button>
             </div>
+            <AddToCart className='itemCounter' item={item} quantity={counter} />
+
 
         </>
     )

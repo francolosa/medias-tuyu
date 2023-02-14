@@ -16,6 +16,10 @@ a{
   box-sizing: content-box;
 }
 
+.navContainer {
+  width: auto;
+    padding-right: 180px;
+}
 
 .imgEdit{
   width: 20%;
@@ -26,6 +30,10 @@ a{
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap
+}
+
+.itemCounter {
+  padding-bottom: 10px;
 }
 
 .carritoContainer {
@@ -70,13 +78,15 @@ a{
   padding: 0;
 }
 
-.itemCounter {
-  background-color: rgb(213, 245, 179);
-  border-radius: 10px;
-  padding: 10px;
+
+.itemCounterText {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
+
 }
+
+
 
 button {
   border-radius: 3px;

@@ -4,22 +4,20 @@ import { Link } from 'react-router-dom'
 import { db } from "../../firebase";
 import { doc, deleteDoc } from 'firebase/firestore'
 import { UserContext } from '../../context/userContext'
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 export default function Item({ item }) {
-    const { admin } = useContext(UserContext);
-    
-    const onEliminarItem = async () => {
-        await deleteDoc(doc(db, "items", item.id));
-    }
+
     return (
-        <div className='Item' id={item.id}>
-            <div className='description'> 
-                <li> {item.nombre}</li>
-            </div>
-                <Link to={`/product/${item.id}`}><img src={item.img} alt="" /></Link>
-           
-                {item.stock === 0 ? <p>Articulo sin stock!</p> : <ItemCounter item={item} />}
-            { admin ? <button onClick={onEliminarItem}>Eliminar item</button> : ""}
-        </div>
-    )
+    <Card style={{ width: '18rem' }} id={item.id}>
+        <Link to={`/product/${item.id}`}>
+      <Card.Img variant="top" src={item.img} />
+      </Link>
+      <Card.Body className='itemCounterText'>
+        <Card.Title className="">{item.nombre}</Card.Title>
+        {item.stock === 0 ? <p className="itemCounter">Articulo sin stock!</p> : <ItemCounter item={item} />}
+      </Card.Body>
+    </Card>
+  );
 }

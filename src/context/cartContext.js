@@ -45,15 +45,13 @@ export default function CartContextProvider({ children }) {
                 return [];
         }  
     } 
-
+    // guarda la info de cantidad y items en local storage para conservarla durante la sesion
     useEffect(() => {
-        console.log(cart)
         const cartJSON = JSON.stringify(cart)
-        console.log(cart)
         localStorage.setItem('cart', cartJSON)
         const cartCounterJSON = JSON.stringify(cartCounter)
         localStorage.setItem('cartCounter', cartCounterJSON)
-    },[]);
+    },[cart]);
 
     useEffect(() => {
         let precioTotal = 0;
