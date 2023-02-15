@@ -63,23 +63,23 @@ export default function CreateUser() {
         }
     }
 
-    return <div>
+    return <div className="formContainer">
         <form onSubmit={onSignIn}>
             <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" onChange={handleUserChange} />
+                <label for="email" class="form-label">Usuario</label>
+                <input type="email"  class="form-control" id="email" aria-describedby="emailHelp" onChange={handleUserChange} placeholder="fulanito@gmail.com"/>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" onChange={handlePwdChange} />
             </div>
             <div class="mb-3">
-                <label for="repeatPassword" class="form-label">Repeat Password</label>
+                <label for="repeatPassword" class="form-label">Repetir Contraseña</label>
                 <input type="password" class="form-control" id="repeatPasswordValidation" onChange={handleRepeatPwdChange} />
             </div>
 
             <div class="mb-3">
-                <ul>
+                <ul className="userInfo">
                 <li id="passwordCharValidation" class="">Debe contener un minimo de 8 caracteres</li>
                 <li id="passwordMayusValidation" class="">Debe contener una Mayúscula</li>
                 <li id="passwordNumberValidation" class="">Debe contener un número</li>
@@ -87,7 +87,7 @@ export default function CreateUser() {
                 <li id="userInfo" class="" style={{color: 'red'}}></li>
                 </ul>
             </div>
-            <button type="submit" id="submit" class="btn btn-primary" disabled='true'>Submit</button>
+            <button type="submit" id="submit" class="btn btn-primary" disabled='true'>Registrarse</button>
         </form>
     </div>
 }

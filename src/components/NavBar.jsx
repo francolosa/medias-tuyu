@@ -26,7 +26,7 @@ export default function NavBar() {
         <Container style={{ width: "auto", paddingRight: "180px"}}>
           <Nav >
             <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/products">Productos</Nav.Link>
+            <Nav.Link href="/products" >Medias</Nav.Link>
             {cartCounter > 0 ? <Nav.Link href="/cart" >Carrito ({cartCounter})</Nav.Link> : ""}
             {online ? <Nav.Link href="/user/profile/" >Mi cuenta</Nav.Link> : ""}
             {online ? <Nav.Link href="/" onClick={onLogOut}  >Cerrar sesión</Nav.Link> : <Nav.Link href="/user/logIn"  >Iniciar Sesión</Nav.Link>}

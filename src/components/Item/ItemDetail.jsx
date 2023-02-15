@@ -1,21 +1,21 @@
 import React, { useEffect, useState, useContext } from 'react';
-import ItemDetailCounter from './Counter/ItemDetailCounter';
+import ItemCounter from './Counter/ItemCounter';
 import { useParams } from 'react-router-dom';
 import { getDoc, doc, deleteDoc } from 'firebase/firestore';
 import { db } from "../../firebase";
-import { UserContext } from '../../context/userContext'
+import { UserContext } from '../../context/userContext'
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 export default function ItemDetail() {
     const [item, setItem] = useState([]);
     const [colores, setColores] = useState([]);
     const [stock, setStock] = useState()
+    const [colorSelected, setColorSelected] = useState()
     const { productId } = useParams();
-    const { admin } = useContext(UserContext);
 
 
-    const onEliminarItem = async () => {
-        await deleteDoc(doc(db, "items", item.id));
-    }
     useEffect(() => {
         const ref = doc(db, "items", productId);
         getDoc(ref)
@@ -30,30 +30,34 @@ export default function ItemDetail() {
             })
     }, [productId]);
 
-    const onEditarItem = () => {
-        window.location.assign(`/products/upDate/${item.id}`)
+    const handleColorChange = color => {
+        setColorSelected(color)
     }
 
     return (
-        <div className='itemDetailContainer'>
-                    <h1>detalle </h1>
-        <div className="itemDetail" id={item.id}>
+        <div className="detailContainer">
+        <Card style={{width: "50%"}} id={item.id}>
+            <Card.Body className='itemDetailContainer'>
+                <Card.Title className="">Nombre: {item.nombre}</Card.Title>
+                <Card.Text> 
+                    <Dropdown>
+                        <Dropdown.Toggle variant="disabled" id="dropdown-basic">
+                            {colorSelected ? colorSelected : "seleccionar color"}
+                        </Dropdown.Toggle>
 
-            <ul>
-                <li>Nombre: {item.nombre}</li>
-                <li>Color: <select>
-                    {colores.map(function (color) {
-                        return <option value={color}>{color}</option>
-                    })}
-                </select></li>
-                <li>Descripcion: {item.descripcion}</li>
-                <li>Talle: {item.talle}</li>
-                <img src={item.img} width="150px"></img>
-            </ul>
-                { admin ? <button onClick={onEditarItem}> Editar Item </button> : ""}
-                { admin ? <button onClick={onEliminarItem}>Eliminar Item</button> : ""}
-            {item.stock = 0 ? <p>Articulo sin stock!</p> : <ItemDetailCounter item={item} stock={stock} />}
-        </div>
+                        <Dropdown.Menu >
+                            {colores.map(function (color) {
+                                return <Dropdown.Item value={color} onClick={function () { handleColorChange(color) }} > {color} </Dropdown.Item>
+                            })}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Card.Text>
+                <Card.Text>Descripcion: {item.descripcion}</Card.Text>
+                <Card.Text>Talle: {item.talle}</Card.Text>
+                <Card.Img variant="top" src={item.img} style={{paddingBottom:"15px"}}/>
+                {item.stock === 0 ? <p className="itemCounter">Articulo sin stock!</p> : <ItemCounter item={item} />}
+            </Card.Body>
+        </Card>
         </div>
     )
 }

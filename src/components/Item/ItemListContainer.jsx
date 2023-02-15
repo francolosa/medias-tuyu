@@ -17,7 +17,7 @@ export default function ItemListContainer() {
             })).catch(error => { console.log(error) })
     }, []);
 
-    return (<>            <h1>productos</h1>
+    return (<>            <h1 style={{padding: "25px"}}>Medias</h1>
   
         <div className='itemListContainer'>
             {products.map(function (item) {

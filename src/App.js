@@ -20,6 +20,7 @@ import ItemListContainer from './components/Item/ItemListContainer';
 import LogInUser from './components/User/LogInUser';
 import AcountUser from './components/User/AcountUser'
 import CreateUser from './components/User/CreateUser'
+import Loader from './components/Loader'
 //ADMIN
 import UpLoadProduct from './components/Admin/UpLoadProduct'
 import UpDateProduct from './components/Admin/UpDateProduct'
@@ -36,7 +37,8 @@ function App() {
 
   return (
     <BrowserRouter>
-      {admin ? <NavBarAdmin />: ""}
+      <Loader/>
+        {admin ? <NavBarAdmin />: ""}
       <NavBar />
 
       <Routes>
@@ -60,6 +62,7 @@ function App() {
 
         <Route path="/products" element={<ItemListContainer/>} />
         <Route path="/product/:productId" element={<ItemDetail/>} />
+        
       </Routes>
     </BrowserRouter>
   );

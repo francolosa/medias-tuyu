@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AddToCart from '../../Cart/AddToCart';
+import Button from 'react-bootstrap/Button';
 
 export default function ItemDetailCounter({ item, stock }) {
 
@@ -17,9 +18,9 @@ export default function ItemDetailCounter({ item, stock }) {
     return (
         <>
             <div className='itemCounter'>
-                <button onClick={aumentarContador}>+</button>
-                {counter}
-                <button onClick={disminuirContador}>-</button>
+            <Button variant="light" onClick={aumentarContador}>+</Button>
+            <Button variant="light" disabled>{counter}</Button>
+                <Button variant="light" onClick={disminuirContador}>-</Button>
             <AddToCart item={item} quantity={counter} />
             </div>
 

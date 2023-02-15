@@ -31,14 +31,14 @@ export default function LogInUser() {
         }
     }
 
-    return <div>
+    return <div className="formContainer">
         <form onSubmit={onLogin}>
             <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
+                <label for="email" class="form-label">Usuario</label>
                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp" onChange={handleUserChange} />
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
+                <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" onChange={handlePwdChange} />
             </div>
             <div class="mb-3 form-check">
@@ -50,7 +50,7 @@ export default function LogInUser() {
                     <li id="loginStatus" class="" style={{ color: 'red' }}></li>
                 </ul>
             </div>
-            <button type="submit" id="submit" class="btn btn-primary" >Iniciar sesion</button>
+            <button type="submit" id="submit" class="btn btn-primary" >Entrar</button>
         </form>
     </div>
 }
