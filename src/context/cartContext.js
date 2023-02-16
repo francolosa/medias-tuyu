@@ -6,7 +6,7 @@ import { UserContext } from './userContext'
 export const CartContext = createContext([]);
 
 export default function CartContextProvider({ children }) {
-    
+    const auth = getAuth;
     const [cart, cartDispach ] = useReducer( cartReducer, [], initCart);
     const [cartCounter, setCartCounter ] = useState(initCounter)
     const [totalPrice, setTotalPrice] = useState()
@@ -46,6 +46,7 @@ export default function CartContextProvider({ children }) {
     } 
     // guarda la info de cantidad y items en local storage para conservarla durante la sesion
     useEffect(() => {
+        console.log(auth)
         const cartJSON = JSON.stringify(cart)
         localStorage.setItem('cart', cartJSON)
         const cartCounterJSON = JSON.stringify(cartCounter)

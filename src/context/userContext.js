@@ -1,5 +1,7 @@
 import React, { createContext, useState } from 'react';
 import { getAuth, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { db } from "../firebase";
+import { addDoc, doc, collection, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
 
 export const UserContext = createContext([]);
 
@@ -55,10 +57,24 @@ export default function UserContextProvider({ children }) {
             });
         return response;
     }
+    /*
+    if(auth.currentUser == null){
+        return window.location.assign("user/logIn")
+    } */
+    const guardarCarritoEnDB = async () => {
+        const auth = getAuth();
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        await updateDoc(userRef, {
+            cart: "holaPUTA"
+        }).then((response)=> {
+            console.log(response)
+        })
+    }
 
     const logOut = async () => {
+        await guardarCarritoEnDB();
         //Logged out
-        const auth = getAuth()
+        const auth = getAuth();
         signOut(auth).then(() => {
             console.log("Se cerró la sesión del usuario")
         })

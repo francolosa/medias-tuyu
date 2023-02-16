@@ -33,11 +33,11 @@ export default function LogInUser() {
 
     return <div className="formContainer">
         <form onSubmit={onLogin}>
-            <div class="mb-3">
+            <div class="mb-3" className="labelContainer">
                 <label for="email" class="form-label">Usuario</label>
                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp" onChange={handleUserChange} />
             </div>
-            <div class="mb-3">
+            <div class="mb-3" style={{paddingTop: "10px"}}>
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" onChange={handlePwdChange} />
             </div>
@@ -45,12 +45,17 @@ export default function LogInUser() {
                 <input type="checkbox" class="form-check-input" id="exampleCheck1" />
                 <label class="form-check-label" for="exampleCheck1">Mantener sesión iniciada</label>
             </div>
-            <div class="mb-3">
+
+            <div  className="userInfo">
                 <ul>
-                    <li id="loginStatus" class="" style={{ color: 'red' }}></li>
+                    <li id="loginStatus" style={{ color: 'red', fontSize: '14px' }}></li>
                 </ul>
             </div>
             <button type="submit" id="submit" class="btn btn-primary" >Entrar</button>
+            <div className="loginOptions">
+                <a href="/user/forgotPassword" style={{fontSize: '14px'}} >Olvidaste tu contraseña?</a>
+                <a href="/user/signIn" style={{fontSize: '14px'}}>No estas registrado? crea tu cuenta</a>
+            </div>
         </form>
     </div>
 }

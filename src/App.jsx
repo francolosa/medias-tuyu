@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthContext } from './context/authContext';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 //COMPONENTS
@@ -20,6 +20,7 @@ import ItemListContainer from './components/Item/ItemListContainer';
 import LogInUser from './components/User/LogInUser';
 import AcountUser from './components/User/AcountUser'
 import CreateUser from './components/User/CreateUser'
+import ForgotPassword from './components/User/ForgotPassword'
 import Loader from './components/Loader'
 //ADMIN
 import UpLoadProduct from './components/Admin/UpLoadProduct'
@@ -33,11 +34,12 @@ import AdminItemDetail from './components/Admin/AdminItems/AdminItemDetail'
 //FUNCTION
 function App() {
   const { online, admin } = useContext(AuthContext);
-  //console.log(onAuthStateChanged())
 
-  return (
-    <BrowserRouter>
-      <Loader/>
+
+
+  return ( <>
+    
+    <BrowserRouter >
         {admin ? <NavBarAdmin />: ""}
       <NavBar />
 
@@ -51,7 +53,8 @@ function App() {
         {online ? "" : <Route path="/user/signIn" element={<CreateUser/>} /> }
         {online ? <Route path="/user/profile" element={<AcountUser/>} /> : "" }
         {online ? "" : <Route path="/admin/logIn" element={<LogInAdmin/>} /> }
-        
+        <Route path="/user/forgotPassword" element={<ForgotPassword/>} />
+
         
         {online && admin ? <Route path="/admin/profile" element={<ProfileAdmin/>} /> : "" }
         {online && admin ? <Route path="/admin/signIn" element={<CreateAdmin/>} /> : "" }
@@ -62,10 +65,9 @@ function App() {
 
         <Route path="/products" element={<ItemListContainer/>} />
         <Route path="/product/:productId" element={<ItemDetail/>} />
-        
       </Routes>
     </BrowserRouter>
-  );
+    </>);
 }
 
 export default App;

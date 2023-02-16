@@ -30,10 +30,9 @@ export default function ItemCounter({ item }) {
     return (
         <>
             <div className='itemCounter'>
-                <Button variant="light" onClick={disminuirContador}>-</Button>
-
+                <Button variant="light" className="addOrDelete" onClick={disminuirContador}>-</Button>
                 <Button variant="light" disabled> {counter}</Button>
-                <Button variant="light" onClick={aumentarContador}>+</Button>
+                <Button variant="light" className="addOrDelete" onClick={aumentarContador}>+</Button>
             </div>
             <AddToCart className='itemCounter' item={item} quantity={counter} />
 

@@ -16,7 +16,7 @@ export default function Item({ item }) {
       </Link>
       <Card.Body className='itemCounterText'>
         <Card.Title className="">{item.nombre}</Card.Title>
-        {item.stock === 0 ? <p className="itemCounter">Articulo sin stock!</p> : <ItemCounter item={item} />}
+        {item.stock === 0 ? <p className="deleteFromCart">Articulo sin stock!</p> : <ItemCounter item={item} />}
       </Card.Body>
     </Card>
   );

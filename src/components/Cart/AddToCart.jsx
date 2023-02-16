@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { CartContext, cart } from '../../context/cartContext';
 import Button from 'react-bootstrap/Button';
 
-export default function addToCart({ item, quantity }) {
+export default function AddToCart({ item, quantity }) {
 
     //const { cartCounter, setCartCounter } = useContext(CartContext)
     const { addToCart } = useContext(CartContext);
@@ -12,6 +12,6 @@ export default function addToCart({ item, quantity }) {
         //setCartCounter(cartCounter+quantity)
     }
 
-    return <Button className='itemCounter' variant="success" onClick={onAddItem}>Agregar al carrito</Button>;
+    return <Button className='addOrDelete' variant="success" onClick={onAddItem}>Agregar al carrito</Button>;
     
 }
