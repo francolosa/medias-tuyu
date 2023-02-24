@@ -1,79 +1,114 @@
 import React, { createContext, useReducer, useState, useEffect, useContext } from 'react';
-import { addDoc, doc, collection, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
-import { db } from "../firebase";
 import { getAuth } from 'firebase/auth';
-import { UserContext } from './userContext'
+import { addDoc, query, getDocs, where, doc, collection, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
+import { db } from "../firebase";
+
 export const CartContext = createContext([]);
 
 export default function CartContextProvider({ children }) {
-    const auth = getAuth;
-    const [cart, cartDispach ] = useReducer( cartReducer, [], initCart);
-    const [cartCounter, setCartCounter ] = useState(initCounter)
+    const [cartCounter, setCartCounter] = useState(initCounter)
+    const [cart, cartDispach] = useReducer(cartReducer, [], initCart);
     const [totalPrice, setTotalPrice] = useState()
-    const { user } = useContext(UserContext);
 
-    function initCart() {
-        const localData = localStorage.getItem('cart');
-        if( 'null' != localData ) {
-            return JSON.parse( localData );
-        }
-        return [];
-    }  
-    function initCounter(){
-        const localData = localStorage.getItem('cartCounter');
-        if( 'undefined ' != typeof localData ){
-            return JSON.parse( localData )
-        }
+    useEffect(() => {
+        const auth = getAuth()
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                encontrarCartDeUsuario();
+            } else {
+                localStorage.removeItem('cart')
+                localStorage.removeItem('cartCounter')        
+            }
+        })
+    }, [])
+
+
+    const encontrarCartDeUsuario = async () => {
+        const auth = getAuth()
+        let oldCart = { "exist": false };
+        const userCart = query(collection(db, "carts"), where("userUid", "==", auth.currentUser.uid));
+        const querySnapshot = await getDocs(userCart);
+        querySnapshot.forEach((doc) => {
+            oldCart = {
+                "exist": true,
+                "cartUId": doc.id,
+                "content": doc.data()
+            }
+            return oldCart;
+        });
+        let cart = oldCart.content.cart
+        let quant = 0;
+        cart.forEach(item =>{
+            quant += item.quantity
+        })
+
+        let counterJSON = JSON.stringify(quant)
+        let cartJSON = JSON.stringify(oldCart.content.cart)
+        localStorage.setItem('cartCounter', counterJSON);
+        localStorage.setItem('cart', cartJSON) 
     }
 
-    function cartReducer( cart, action ) {
-        switch( action.type ) {
+    function initCounter(){
+        const localData =  localStorage.getItem('cartCounter');
+        if (undefined != typeof localData) {
+            return JSON.parse(localData)
+        }
+    }
+    function initCart() {
+        const localData = localStorage.getItem('cart');
+        if (null != localData || localData == false) {
+            return JSON.parse(localData);
+        }
+        return [];
+    }
+
+
+    function cartReducer(cart, action) {
+        switch (action.type) {
             case 'add':
-                return [...cart,action.payload];
+                return [...cart, action.payload];
             case 'delete':
-                return cart.filter( element => action.item_id !== element.id );
+                return cart.filter(element => action.item_id !== element.id);
             case 'updateQuantity':
                 for (var i = 0; i < cart.length; i++) {
-                    if (cart[i].id == action.item_id ) {
+                    if (cart[i].id == action.item_id) {
                         cart[i].quantity = action.quantity;
                         return [...cart];
                     }
                 }
-                
             case 'clear':
                 return [];
-        }  
-    } 
+        }
+    }
     // guarda la info de cantidad y items en local storage para conservarla durante la sesion
     useEffect(() => {
-        console.log(auth)
-        const cartJSON = JSON.stringify(cart)
-        localStorage.setItem('cart', cartJSON)
         const cartCounterJSON = JSON.stringify(cartCounter)
         localStorage.setItem('cartCounter', cartCounterJSON)
-    },[cart]);
+        const cartJSON = JSON.stringify(cart)
+        localStorage.setItem('cart', cartJSON)
+
+    }, [cart]);
 
     useEffect(() => {
         let precioTotal = 0;
-        if( Array.isArray(cart)){
+        if (Array.isArray(cart)) {
             cart.forEach(element => {
                 precioTotal = precioTotal + element.precio * element.quantity
             });
         }
         setTotalPrice(precioTotal)
-
     });
-
 
     /*
     * Function addToCart
     *
     */
-    function addToCart( item, quantity ) {
-        if ( ! isInCart( item ) && ( quantity > 0) ) {
-            setCartCounter(cartCounter+quantity)
-            cartDispach( {
-                type:'add', payload: { ...item, quantity: quantity } } );
+    function addToCart(item, quantity) {
+        if (!isInCart(item) && (quantity > 0)) {
+            setCartCounter(cartCounter + quantity)
+            cartDispach({
+                type: 'add', payload: { ...item, quantity: quantity }
+            });
         }
     }
 
@@ -81,22 +116,22 @@ export default function CartContextProvider({ children }) {
     * Function deleteFromCart
     *
     */
-    function deleteFromCart( item ) {
-        setCartCounter(cartCounter-item.quantity)
-        cartDispach( {type:'delete',item_id: item.id } );
+    function deleteFromCart(item) {
+        setCartCounter(cartCounter - item.quantity)
+        cartDispach({ type: 'delete', item_id: item.id });
     }
 
     /*
     * Function deleteFromCart
     *
     */
-   function modifyQuantInCart(item, newQuantity ) {
+    function modifyQuantInCart(item, newQuantity) {
 
-        cartDispach({ 
-            type: 'updateQuantity', 
+        cartDispach({
+            type: 'updateQuantity',
             item_id: item.id,
             quantity: newQuantity
-         });
+        });
 
     }
 
@@ -104,7 +139,7 @@ export default function CartContextProvider({ children }) {
     * Function deleteFromCart
     *
     */
-   function clearCart() {
+    function clearCart() {
         setCartCounter(0)
         const emptyCart = [];
         cartDispach({ type: 'clear' });
@@ -133,7 +168,7 @@ export default function CartContextProvider({ children }) {
         });
     }
 
-    const vincularUserConOrder = async (orderId) => {        
+    const vincularUserConOrder = async (orderId) => {
         const auth = getAuth()
         const userRef = doc(db, 'users', auth.currentUser.uid);
         await updateDoc(userRef, {
@@ -141,12 +176,12 @@ export default function CartContextProvider({ children }) {
         })
     }
 
-    
+
     const generarOrden = () => {
         const auth = getAuth()
-        if(auth.currentUser == null){
+        if (auth.currentUser == null) {
             return window.location.assign("user/logIn")
-        } 
+        }
 
         const orders = collection(db, 'orders');
         let newOrder = {
@@ -156,14 +191,14 @@ export default function CartContextProvider({ children }) {
             totalPrice: totalPrice,
             items: [...cart]
         }
-         addDoc(orders, newOrder).then((docRef) => {
+        addDoc(orders, newOrder).then((docRef) => {
             vincularUserConOrder(docRef.id)
-            })
+        })
 
         console.log("Se generó una nueva orden: ", newOrder)
-         actualizarStockItems();
+        actualizarStockItems();
         clearCart()
-            
+
     }
     return (<CartContext.Provider value={{ cart, cartCounter, setCartCounter, cartDispach, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
         {children}

@@ -1,11 +1,13 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import { getAuth, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { db } from "../firebase";
-import { addDoc, doc, collection, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
+import { addDoc, doc, query, createDoc, where, collection, updateDoc, getDoc, getDocs, arrayUnion, setDoc, DocumentReference } from 'firebase/firestore';
+import { CartContext } from './cartContext'
 
 export const UserContext = createContext([]);
 
 export default function UserContextProvider({ children }) {
+    const { cart } = useContext(CartContext);
 
     const logIn = async (emailUserLogin, passwordUserLogin) => {
         const auth = getAuth();
@@ -26,7 +28,7 @@ export default function UserContextProvider({ children }) {
                     state: error.message
                 }
             });
-            return response;
+        return response;
     }
 
     const signIn = async (userEmail, passwordUserCreate, repeatPassword) => {
@@ -61,27 +63,60 @@ export default function UserContextProvider({ children }) {
     if(auth.currentUser == null){
         return window.location.assign("user/logIn")
     } */
-    const guardarCarritoEnDB = async () => {
+    const encontrarCartDeUsuario = async () => {
         const auth = getAuth();
-        const userRef = doc(db, 'users', auth.currentUser.uid);
-        await updateDoc(userRef, {
-            cart: "holaPUTA"
-        }).then((response)=> {
-            console.log(response)
-        })
+        let oldCart = { "exist": false };
+        const userCart = query(collection(db, "carts"), where("userUid", "==", auth.currentUser.uid));
+        const querySnapshot = await getDocs(userCart);
+        querySnapshot.forEach((doc) => {
+          console.log(doc.id, " => ", doc.data());
+            oldCart = {
+                "exist": true,
+                "cartUId": doc.id,
+                "content": doc.data()
+            }    
+          return oldCart;
+        });
+        return oldCart;
+    }
+
+    const vincularCartConUser = async () => {
+        const auth = getAuth();
+        let cartRef = collection(db, 'carts')
+        let oldCart = await encontrarCartDeUsuario();
+        if(oldCart.exist == false){
+            await addDoc(cartRef, {
+                userUid: auth.currentUser.uid,
+                cart: [...cart]
+            }).then((response) => {
+                console.log(response)
+            }) 
+        } 
+        if(oldCart.exist == true) {
+            cartRef = doc(db, 'carts', oldCart.cartUId)
+            await updateDoc(cartRef, {
+                cart: [...cart]
+            }).then((response) => {
+                console.log(response)
+            }) 
+        }
     }
 
     const logOut = async () => {
-        await guardarCarritoEnDB();
-        //Logged out
+        console.log("cerrando sesion")
         const auth = getAuth();
+
+        await vincularCartConUser();
+        
+        //Logged out
         signOut(auth).then(() => {
             console.log("Se cerró la sesión del usuario")
         })
         window.location.assign("/")
+        
     };
 
-    return (<UserContext.Provider value={{ logIn, signIn, logOut }}>
+    return (<UserContext.Provider value={{ logIn, signIn, logOut, encontrarCartDeUsuario }}>
         {children}
     </UserContext.Provider>
     )

@@ -14,11 +14,13 @@ root.render(
   <React.StrictMode>
     <AuthContextProvider>
   <AdminContextProvider>
+  <CartContextProvider>
+
     <UserContextProvider>
-      <CartContextProvider>
     <App />
-    </CartContextProvider>
     </UserContextProvider>
+    </CartContextProvider>
+
     </AdminContextProvider>
     </AuthContextProvider>
   </React.StrictMode>
