@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, useState, useEffect, useContext } from 'react';
 import { getAuth } from 'firebase/auth';
-import { addDoc, query, getDocs, where, doc, collection, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { db } from "../firebase";
 
 export const CartContext = createContext([]);
@@ -17,39 +17,31 @@ export default function CartContextProvider({ children }) {
                 encontrarCartDeUsuario();
             } else {
                 localStorage.removeItem('cart')
-                localStorage.removeItem('cartCounter')        
+                localStorage.removeItem('cartCounter')
             }
         })
     }, [])
 
-
     const encontrarCartDeUsuario = async () => {
         const auth = getAuth()
-        let oldCart = { "exist": false };
-        const userCart = query(collection(db, "carts"), where("userUid", "==", auth.currentUser.uid));
-        const querySnapshot = await getDocs(userCart);
-        querySnapshot.forEach((doc) => {
-            oldCart = {
-                "exist": true,
-                "cartUId": doc.id,
-                "content": doc.data()
-            }
-            return oldCart;
-        });
-        let cart = oldCart.content.cart
-        let quant = 0;
-        cart.forEach(item =>{
-            quant += item.quantity
-        })
-
-        let counterJSON = JSON.stringify(quant)
-        let cartJSON = JSON.stringify(oldCart.content.cart)
-        localStorage.setItem('cartCounter', counterJSON);
-        localStorage.setItem('cart', cartJSON) 
+        const docRef = doc(db, "carts", auth.currentUser.uid)
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+            let cart = docSnap.data().cart
+            let quant = 0
+            console.log(cart)
+            cart.forEach(item => {
+                quant += item.quantity
+            })
+            let counterJSON = JSON.stringify(quant)
+            let cartJSON = JSON.stringify(cart)
+            localStorage.setItem('cartCounter', counterJSON);
+            localStorage.setItem('cart', cartJSON)
+        }
     }
 
-    function initCounter(){
-        const localData =  localStorage.getItem('cartCounter');
+    function initCounter() {
+        const localData = localStorage.getItem('cartCounter');
         if (undefined != typeof localData) {
             return JSON.parse(localData)
         }
@@ -61,7 +53,6 @@ export default function CartContextProvider({ children }) {
         }
         return [];
     }
-
 
     function cartReducer(cart, action) {
         switch (action.type) {
@@ -83,8 +74,8 @@ export default function CartContextProvider({ children }) {
     // guarda la info de cantidad y items en local storage para conservarla durante la sesion
     useEffect(() => {
         const cartCounterJSON = JSON.stringify(cartCounter)
-        localStorage.setItem('cartCounter', cartCounterJSON)
         const cartJSON = JSON.stringify(cart)
+        localStorage.setItem('cartCounter', cartCounterJSON)
         localStorage.setItem('cart', cartJSON)
 
     }, [cart]);
@@ -99,10 +90,6 @@ export default function CartContextProvider({ children }) {
         setTotalPrice(precioTotal)
     });
 
-    /*
-    * Function addToCart
-    *
-    */
     function addToCart(item, quantity) {
         if (!isInCart(item) && (quantity > 0)) {
             setCartCounter(cartCounter + quantity)
@@ -112,19 +99,12 @@ export default function CartContextProvider({ children }) {
         }
     }
 
-    /*
-    * Function deleteFromCart
-    *
-    */
     function deleteFromCart(item) {
         setCartCounter(cartCounter - item.quantity)
         cartDispach({ type: 'delete', item_id: item.id });
     }
 
-    /*
-    * Function deleteFromCart
-    *
-    */
+
     function modifyQuantInCart(item, newQuantity) {
 
         cartDispach({
@@ -135,20 +115,12 @@ export default function CartContextProvider({ children }) {
 
     }
 
-    /*
-    * Function deleteFromCart
-    *
-    */
     function clearCart() {
         setCartCounter(0)
         const emptyCart = [];
         cartDispach({ type: 'clear' });
     }
 
-    /*
-    * Function isInCart
-    *
-    */
     function isInCart(item) {
         if (Array.isArray(cart) && cart.length > 0) {
             return cart.find(element => item.id === element.id) ? true : false;
@@ -167,38 +139,36 @@ export default function CartContextProvider({ children }) {
             });
         });
     }
-
-    const vincularUserConOrder = async (orderId) => {
-        const auth = getAuth()
-        const userRef = doc(db, 'users', auth.currentUser.uid);
-        await updateDoc(userRef, {
-            orders: arrayUnion(orderId)
-        })
+    const saveOrderOnDB = async () => {
+        const auth = getAuth();
+        let newOrder = {
+            date: Date(),
+            totalPrice: totalPrice,
+            items: [...cart]
+        }
+        const docRef = doc(db, "orders", auth.currentUser.uid)
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+            await updateDoc(doc(db, "orders", auth.currentUser.uid), {
+                orders: arrayUnion(newOrder),
+                updatedAt: Date()
+            })
+        } else {
+            await setDoc(doc(db, "orders", auth.currentUser.uid), {
+                orders: [newOrder],
+                updatedAt: Date()
+            })
+        }
     }
 
-
-    const generarOrden = () => {
+    const generarOrden = async () => {
         const auth = getAuth()
         if (auth.currentUser == null) {
             return window.location.assign("user/logIn")
         }
-
-        const orders = collection(db, 'orders');
-        let newOrder = {
-            userUid: auth.currentUser.uid,
-            userEmail: auth.currentUser.email,
-            fecha: Date(),
-            totalPrice: totalPrice,
-            items: [...cart]
-        }
-        addDoc(orders, newOrder).then((docRef) => {
-            vincularUserConOrder(docRef.id)
-        })
-
-        console.log("Se generó una nueva orden: ", newOrder)
-        actualizarStockItems();
+        await saveOrderOnDB()
+        //actualizarStockItems();
         clearCart()
-
     }
     return (<CartContext.Provider value={{ cart, cartCounter, setCartCounter, cartDispach, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
         {children}

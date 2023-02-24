@@ -262,7 +262,7 @@ form {
   border-radius: 10px;
   padding: 40px;
   border-radius: 10px;
-  background-color: #fef985;
+  background-color: #fdf86790;
   width: 420px;
 }
 
@@ -332,6 +332,12 @@ label {
     justify-content: center;
     align-items: center;
 }
+
+.card:hover {
+  background-color: #fbea044d;
+  transition: background-color .5s;
+}
+
 
 .lds-heart {
   display: inline-block;
