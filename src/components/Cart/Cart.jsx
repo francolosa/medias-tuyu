@@ -23,7 +23,6 @@ export default function Cart() {
     <thead>
       <tr>
         <th>checkbokx</th>
-        <th>Foto</th>
         <th>Nombre</th>
         <th>Colores</th>
         <th>Talles</th>
@@ -41,7 +40,6 @@ export default function Cart() {
                }) : ""}
       <tr>
       <td></td>
-          <td></td>
 
         <td></td>
         <td></td>
@@ -53,7 +51,6 @@ export default function Cart() {
     
       </tr>
       <tr>
-      <td></td>
 
       <td></td>
       <td></td>

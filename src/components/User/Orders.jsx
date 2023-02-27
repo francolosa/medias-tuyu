@@ -7,10 +7,10 @@ import { AuthContext } from '../../context/authContext';
 
 export default function Orders() {
     const [orders, setOrders] = useState([])
-    const { online, userUid } = useContext(AuthContext);
+    const { online, userData } = useContext(AuthContext);
 
     const getOrders = async () => {    
-        const docRef = doc(db, "orders", userUid)
+        const docRef = doc(db, "orders", userData.uid)
         const docSnap = await getDoc(docRef)
         console.log("docsnap data => " +docSnap.data())
         let orders = docSnap.data().orders
@@ -24,7 +24,7 @@ export default function Orders() {
     }, [])
 
     return <>
-        <h1 class="navbar navbar-expand navbar-light bg-light">Mis Ordenes</h1>
+        <h1 >Mis Ordenes</h1>
         {orders.map((order) => {
             return <Order order={order} />
         })}

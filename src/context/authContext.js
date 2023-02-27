@@ -5,22 +5,25 @@ export const AuthContext = createContext([]);
 
 export default function AuthContextProvider({children}){
     const [online, setIsOnline] = useState();
-    const [userUid, setUserUid] = useState(false);
+    const [userData, setUserData] = useState(false);
     
     useEffect(() => {
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
             if (user) {  
-                setUserUid(user.uid)
+                setUserData({
+                    uid: user.uid,
+                    email: user.email
+                })
                 setIsOnline(true);
             } else {
                 setIsOnline(false);
-                setUserUid(false)
+                setUserData(false)
             }
         });
     }, []);
 
-    return <AuthContext.Provider value={{online, userUid}}>
+    return <AuthContext.Provider value={{online, userData}}>
         {children}
         </AuthContext.Provider>
 }

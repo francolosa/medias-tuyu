@@ -27,8 +27,6 @@ export default function ItemInCartCounter({ item }) {
         };
     }
 
-
-
     return (
         <>
             <div className='itemCounter'>

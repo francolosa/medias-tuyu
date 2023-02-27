@@ -1,7 +1,8 @@
-import React, { createContext, useReducer, useState, useEffect } from 'react';
+import React, { createContext, useReducer, useContext, useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { db } from "../firebase";
+import { AuthContext } from './authContext';
 
 export const CartContext = createContext([]);
 
@@ -9,6 +10,7 @@ export default function CartContextProvider({ children }) {
     const [cartCounter, setCartCounter] = useState(initCounter)
     const [cart, cartDispach] = useReducer(cartReducer, [], initCart);
     const [totalPrice, setTotalPrice] = useState()
+    const { online } = useContext(AuthContext);
 
     useEffect(() => {
         const auth = getAuth()
@@ -16,19 +18,15 @@ export default function CartContextProvider({ children }) {
             console.log("me llaman")
             if (user) {
                 console.log("hay usuario")
-                encontrarCartDeUsuario();
+                encontrarCartDeUsuario(user.uid);
             } else {
                 console.log("no hay usuario")
-                return
-                localStorage.removeItem('cart')
-                localStorage.removeItem('cartCounter')
             }
         })
-    }, [])
+    }, [online])
 
-    const encontrarCartDeUsuario = async () => {
-        const auth = getAuth()
-        const docRef = doc(db, "carts", auth.currentUser.uid)
+    const encontrarCartDeUsuario = async (userUid) => {
+        const docRef = doc(db, "carts", userUid)
         const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
             let cart = docSnap.data().cart
@@ -42,6 +40,7 @@ export default function CartContextProvider({ children }) {
             let cartJSON = JSON.stringify(cart)
             localStorage.setItem('cartCounter', counterJSON);
             localStorage.setItem('cart', cartJSON)
+            setCartCounter(quant);
         }
     }
 
@@ -82,7 +81,6 @@ export default function CartContextProvider({ children }) {
         const cartJSON = JSON.stringify(cart)
         localStorage.setItem('cartCounter', cartCounterJSON)
         localStorage.setItem('cart', cartJSON)
-
     }, [cart]);
 
     useEffect(() => {
@@ -96,12 +94,17 @@ export default function CartContextProvider({ children }) {
     });
 
     function addToCart(item, quantity) {
-        if (!isInCart(item) && (quantity > 0)) {
-            setCartCounter(cartCounter + quantity)
-            cartDispach({
-                type: 'add', payload: { ...item, quantity: quantity }
-            });
+       // if(online){
+            if (!isInCart(item) && (quantity > 0)) {
+                setCartCounter(cartCounter + quantity)
+                cartDispach({
+                    type: 'add', payload: { ...item, quantity: quantity }
+                });
+           // }
+        } else {
+            window.location.assign("user/login")
         }
+
     }
 
     function deleteFromCart(item) {
@@ -109,15 +112,12 @@ export default function CartContextProvider({ children }) {
         cartDispach({ type: 'delete', item_id: item.id });
     }
 
-
     function modifyQuantInCart(item, newQuantity) {
-
         cartDispach({
             type: 'updateQuantity',
             item_id: item.id,
             quantity: newQuantity
         });
-
     }
 
     function clearCart() {

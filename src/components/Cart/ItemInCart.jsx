@@ -7,7 +7,6 @@ export default function ItemInCart({ item }) {
     return (
         <tr className="itemInCart" id={item.id}>
             <td><input type="checkbox" name="" class="form-check-input" /></td>
-            <td><img src={item.img}/></td>
             <td>{item.nombre}</td>
             <td>{item.color}</td>
             <td>{item.talle}</td>
