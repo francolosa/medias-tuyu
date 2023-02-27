@@ -10,7 +10,7 @@ import Card from 'react-bootstrap/Card';
 export default function Item({ item }) {
 
     return (
-    <Card style={{ width: '18rem' }} id={item.id}>
+    <Card className="itemCard" style={{ width: '18rem' }} id={item.id}>
         <Link to={`/product/${item.id}`}>
       <Card.Img variant="top" src={item.img} />
       </Link>

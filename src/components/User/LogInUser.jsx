@@ -33,15 +33,15 @@ export default function LogInUser() {
 
     return <div className="formContainer">
         <form onSubmit={onLogin}>
-            <div class="mb-3" className="labelContainer">
+            <div class="mb-3" className="inputForm" >
                 <label for="email" class="form-label">Usuario</label>
                 <input type="email" class="form-control" id="email" aria-describedby="emailHelp" onChange={handleUserChange} />
             </div>
-            <div class="mb-3" style={{paddingTop: "10px"}}>
+            <div class="mb-3" className="inputForm" >
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" onChange={handlePwdChange} />
             </div>
-            <div class="mb-3 form-check">
+            <div class="mb-3 form-check" >
                 <input type="checkbox" class="form-check-input" id="exampleCheck1" />
                 <label class="form-check-label" for="exampleCheck1">Mantener sesión iniciada</label>
             </div>
@@ -51,10 +51,10 @@ export default function LogInUser() {
                     <li id="loginStatus" style={{ color: 'red', fontSize: '14px' }}></li>
                 </ul>
             </div>
-            <button type="submit" id="submit" class="btn btn-primary" >Entrar</button>
+            <button type="submit" id="submit" class="btn btn-success" >Entrar</button>
             <div className="loginOptions">
-                <a href="/user/forgotPassword" style={{fontSize: '14px'}} >Olvidaste tu contraseña?</a>
-                <a href="/user/signIn" style={{fontSize: '14px'}}>No estas registrado? crea tu cuenta</a>
+                <a href="/user/forgotPassword" style={{fontSize: '14px', color: "gray"}} >Olvidaste tu contraseña?</a>
+                <a href="/user/signIn" style={{fontSize: '14px', color: "gray"}}>No estas registrado? crea tu cuenta</a>
             </div>
         </form>
     </div>

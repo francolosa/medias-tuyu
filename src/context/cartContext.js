@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useState, useEffect, useContext } from 'react';
+import React, { createContext, useReducer, useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { db } from "../firebase";
@@ -13,9 +13,13 @@ export default function CartContextProvider({ children }) {
     useEffect(() => {
         const auth = getAuth()
         auth.onAuthStateChanged((user) => {
+            console.log("me llaman")
             if (user) {
+                console.log("hay usuario")
                 encontrarCartDeUsuario();
             } else {
+                console.log("no hay usuario")
+                return
                 localStorage.removeItem('cart')
                 localStorage.removeItem('cartCounter')
             }
@@ -33,6 +37,7 @@ export default function CartContextProvider({ children }) {
             cart.forEach(item => {
                 quant += item.quantity
             })
+            
             let counterJSON = JSON.stringify(quant)
             let cartJSON = JSON.stringify(cart)
             localStorage.setItem('cartCounter', counterJSON);
@@ -141,13 +146,16 @@ export default function CartContextProvider({ children }) {
     }
     const saveOrderOnDB = async () => {
         const auth = getAuth();
+        const docRef = doc(db, "orders", auth.currentUser.uid)
+        const docSnap = await getDoc(docRef)
+        let length = docSnap.exists() ? docSnap.data().orders.length+1 : 1
+        let orderId = auth.currentUser.uid + "-" +length;
         let newOrder = {
+            orderId: orderId,
             date: Date(),
             totalPrice: totalPrice,
             items: [...cart]
         }
-        const docRef = doc(db, "orders", auth.currentUser.uid)
-        const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
             await updateDoc(doc(db, "orders", auth.currentUser.uid), {
                 orders: arrayUnion(newOrder),

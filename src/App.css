@@ -12,7 +12,6 @@ a{
   font-family:Verdana, Geneva, Tahoma, sans-serif;
 }
 
-
 .selector-for-some-widget {
   box-sizing: content-box;
 }
@@ -149,9 +148,7 @@ tr > th {
   border: none;
   color: #FFFFFF;
   text-align: center;
-  font-size: 28px;
   padding: 20px;
-  width: 200px;
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
@@ -174,7 +171,7 @@ tr > th {
 }
 
 .generateOrder:hover span {
-  padding-right: 25px;
+  padding-right: 15px;
 }
 
 .generateOrder:hover span:after {
@@ -211,10 +208,7 @@ li {
   text-align: center;
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
+
 
 td, th {
   border: 1px solid #dddddd;
@@ -222,9 +216,7 @@ td, th {
   padding: 8px;
 }
 
-.itemInCart {
-  width: 100;
-}
+
 
 .Item {
   display: flex;
@@ -262,7 +254,7 @@ form {
   border-radius: 10px;
   padding: 40px;
   border-radius: 10px;
-  background-color: #fdf86790;
+	background: linear-gradient(100deg, #faf795, rgb(252, 213, 153));
   width: 420px;
 }
 
@@ -270,14 +262,32 @@ form {
   font-size: 14px;
 }
 
-form >div {
+
+.inputForm {
+  width: 80%;
+  justify-content: center;
   display: flex;
-    flex-direction: column;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+ul > li {
+  width: 100%;
+  margin-right: 30px;
 }
 
 .card {
   box-shadow: 9px 10px 7px 0px #14161947;
   margin-top: 30px;
+  border: none;
+}
+
+
+
+
+.card:hover{
+  transition: transform 0.2s ease-out;
+  transform: translateY(-10px);
 }
 
 .loginOptions {
@@ -326,79 +336,98 @@ label {
   color: green;
 }
 
-.loaderCentrado {
-  height: 100vh;
-  display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.card:hover {
-  background-color: #fbea044d;
-  transition: background-color .5s;
-}
-
-
-.lds-heart {
+.loader {
   display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
+  position: absolute;
+  top:50%;
+  left: 48%;
   transform: rotate(45deg);
   transform-origin: 40px 40px;
-}
-.lds-heart div {
+ }
+ 
+ .loader div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   top: 32px;
   left: 32px;
   position: absolute;
   width: 32px;
   height: 32px;
-  background: #fbea04;
-  animation: lds-heart 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-}
-.lds-heart div:after,
-.lds-heart div:before {
+  background: rgb(254, 222, 92);
+  animation: loader45 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+ }
+ 
+ .loader div:after,
+ .loader div:before {
+
   content: " ";
   position: absolute;
   display: block;
   width: 32px;
   height: 32px;
-  background: #fbea04;
-}
-.lds-heart div:before {
+  background: rgb(254, 222, 92);
+ }
+ 
+ .loader div:before {
+
   left: -24px;
   border-radius: 50% 0 0 50%;
-}
-.lds-heart div:after {
+ }
+ 
+ .loader div:after {
+
   top: -24px;
   border-radius: 50% 50% 0 0;
-}
-@keyframes lds-heart {
+ }
+ 
+ @keyframes loader45 {
   0% {
-    transform: scale(0.95);
+   transform: scale(0.95);
   }
+ 
   5% {
-    transform: scale(1.1);
+   transform: scale(1.1);
   }
+ 
   39% {
-    transform: scale(0.85);
+   transform: scale(0.85);
   }
+ 
   45% {
-    transform: scale(1);
+   transform: scale(1);
   }
+ 
   60% {
-    transform: scale(0.95);
+   transform: scale(0.95);
   }
+ 
   100% {
-    transform: scale(0.9);
+   transform: scale(0.9);
   }
+ }
+nav {
+  background-color: yellow;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+body {
+	font-family: sans-serif;
+	font-weight: 100;
 }
+
+.tableContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+table {
+  width: 70%;
+}
+
+td > img {
+  width: 10%;
+}
+
+
+

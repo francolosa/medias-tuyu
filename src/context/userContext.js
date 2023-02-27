@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getAuth, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { db } from "../firebase";
 import { doc, setDoc } from 'firebase/firestore';
@@ -8,7 +8,7 @@ export const UserContext = createContext([]);
 
 export default function UserContextProvider({ children }) {
     const { cart } = useContext(CartContext);
-
+    
     const logIn = async (emailUserLogin, passwordUserLogin) => {
         const auth = getAuth();
         let response;

@@ -1,12 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { CartContext } from '../../context/cartContext';
 import ItemInCart from './ItemInCart';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
+
 export default function Cart() {
     const { cart, generarOrden, totalPrice, clearCart } = useContext(CartContext);
-    console.log(cart)
     const onVaciarCarrito = async()=>{
         await clearCart();
     }
@@ -17,9 +17,13 @@ export default function Cart() {
 
   return (
     <>
-    { cart.length > 0 ? (<Table striped bordered hover>
+    { cart.length > 0 ? (
+    <div className="tableContainer">
+    <Table striped bordered hover>  
     <thead>
       <tr>
+        <th>checkbokx</th>
+        <th>Foto</th>
         <th>Nombre</th>
         <th>Colores</th>
         <th>Talles</th>
@@ -36,6 +40,9 @@ export default function Cart() {
                   return <ItemInCart item={item} />
                }) : ""}
       <tr>
+      <td></td>
+          <td></td>
+
         <td></td>
         <td></td>
         <td></td>
@@ -47,6 +54,9 @@ export default function Cart() {
       </tr>
       <tr>
       <td></td>
+
+      <td></td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -57,7 +67,10 @@ export default function Cart() {
       </tr>
     
     </tbody>
-    </Table>) : <h1 style={{padding: "25px"}}>Nada por aquí...</h1> }
+   
+    </Table>
+    </div>
+    ) : <h1 style={{padding: "25px"}}>Nada por aquí...</h1> }
     </>
     );
 }

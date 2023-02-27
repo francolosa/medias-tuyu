@@ -63,19 +63,19 @@ export default function CreateUser() {
         }
     }
 
-    return <div className="formContainer">
+    return <div className="formContainer" >
         <form onSubmit={onSignIn}>
-            <div class="mb-3">
-                <label for="email" class="form-label">Usuario</label>
+            <div class="mb-3" className="inputForm" >
+                <label for="email"  class="form-label">Usuario</label>
                 <input type="email"  class="form-control" id="email" aria-describedby="emailHelp" onChange={handleUserChange} placeholder="fulanito@gmail.com"/>
             </div>
-            <div class="mb-3">
+            <div class="mb-3" className="inputForm" >
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" onChange={handlePwdChange} />
+                <input type="password"  class="form-control" id="password" onChange={handlePwdChange} />
             </div>
-            <div class="mb-3">
+            <div class="mb-3" className="inputForm" >
                 <label for="repeatPassword" class="form-label">Repetir Contraseña</label>
-                <input type="password" class="form-control" id="repeatPasswordValidation" onChange={handleRepeatPwdChange} />
+                <input type="password"  class="form-control" id="repeatPasswordValidation" onChange={handleRepeatPwdChange} />
             </div>
 
             <div class="mb-3">
@@ -87,7 +87,7 @@ export default function CreateUser() {
                 <li id="userInfo" class="" style={{color: 'red'}}></li>
                 </ul>
             </div>
-            <button type="submit" id="submit" class="btn btn-primary" disabled='true'>Registrarse</button>
+            <button type="submit" id="submit" class="btn btn-success" disabled='true'>Registrarse</button>
         </form>
     </div>
 }
