@@ -8,6 +8,7 @@ export const UserContext = createContext([]);
 
 export default function UserContextProvider({ children }) {
     const { cart } = useContext(CartContext);
+    const [ userUid , setUserUid ] = useState();
     
     const logIn = async (emailUserLogin, passwordUserLogin) => {
         const auth = getAuth();
@@ -16,6 +17,7 @@ export default function UserContextProvider({ children }) {
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log("Se inició la sesion del usuario: " + user.email);
+                setUserUid(user.uid);
                 response = {
                     status: 200,
                     state: user
