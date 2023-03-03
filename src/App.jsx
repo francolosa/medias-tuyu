@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
+
 //COMPONENTS
 import React from 'react';
 //NAV BAR
@@ -29,41 +30,43 @@ function App() {
   const { online } = useContext(AuthContext);
   const [loaded, setLoaded] = useState(false);
 
-  useEffect(()=>{
-    const timeout = setTimeout(()=>{
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
       setLoaded(true)
     }, 2000)
     return () => clearTimeout(timeout)
   }, [])
 
-  if(!loaded){
+
+  if (!loaded) {
     return <div class="loader"><div></div></div>
   }
 
-  return ( <>
-    
+  return (<>
+
     <BrowserRouter >
       <NavBar />
 
       <Routes>
-        <Route path="/" element={<ItemListContainer/>} />
-        
-        <Route path="/cart" element={<Cart/>} />
-        {online ? <Route path="/cart/checkOut/:docRefId" element={<CheckOut/>}/> : ""}
+        <Route path="/" element={<ItemListContainer />} />
 
-        {online ? "" : <Route path="/user/logIn" element={<LogInUser/>} /> }
-        {online ? "" : <Route path="/user/signIn" element={<CreateUser/>} /> }
-        <Route path="/user/forgotPassword" element={<ForgotPassword/>} />
+        <Route path="/cart" element={<Cart />} />
+        {online ? <Route path="/cart/checkOut/:docRefId" element={<CheckOut />} /> : ""}
 
- 
-        <Route path="/account/orders" element={<Orders/>} />
-        <Route path="/account/profile" element={<ProfileUser/>} />
+        {online ? "" : <Route path="/user/logIn" element={<LogInUser />} />}
+        {online ? "" : <Route path="/user/signIn" element={<CreateUser />} />}
+        <Route path="/user/forgotPassword" element={<ForgotPassword />} />
 
-        <Route path="/products" element={<ItemListContainer/>} />
-        <Route path="/product/:productId" element={<ItemDetail/>} />
+
+        <Route path="/account/orders" element={<Orders />} />
+        <Route path="/account/profile" element={<ProfileUser />} />
+
+        <Route path="/products" element={<ItemListContainer />} />
+        <Route path="/product/:productId" element={<ItemDetail />} />
       </Routes>
     </BrowserRouter>
-    </>);
+  </>);
 }
 
 export default App;

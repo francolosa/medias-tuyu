@@ -2,7 +2,6 @@ import React, { createContext, useReducer, useContext, useState, useEffect } fro
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc, getDoc, arrayUnion, setDoc } from 'firebase/firestore';
 import { db } from "../firebase";
-import { AuthContext } from './authContext';
 
 export const CartContext = createContext([]);
 
@@ -10,53 +9,61 @@ export default function CartContextProvider({ children }) {
     const [cartCounter, setCartCounter] = useState(initCounter)
     const [cart, cartDispach] = useReducer(cartReducer, [], initCart);
     const [totalPrice, setTotalPrice] = useState()
-    const { online } = useContext(AuthContext);
-
-    useEffect(() => {
-        const auth = getAuth()
-        auth.onAuthStateChanged((user) => {
-            console.log("me llaman")
-            if (user) {
-                console.log("hay usuario")
-                encontrarCartDeUsuario(user.uid);
-            } else {
-                console.log("no hay usuario")
-            }
-        })
-    }, [online])
-
-    const encontrarCartDeUsuario = async (userUid) => {
-        const docRef = doc(db, "carts", userUid)
-        const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-            let cart = docSnap.data().cart
-            let quant = 0
-            console.log(cart)
-            cart.forEach(item => {
-                quant += item.quantity
-            })
-            
-            let counterJSON = JSON.stringify(quant)
-            let cartJSON = JSON.stringify(cart)
-            localStorage.setItem('cartCounter', counterJSON);
-            localStorage.setItem('cart', cartJSON)
-            setCartCounter(quant);
-        }
-    }
 
     function initCounter() {
-        const localData = localStorage.getItem('cartCounter');
+        console.log("initCounter")
+        const session = sessionStorage.getItem('session');
+        console.log("session  en initcounter => "+session)
+        console.log(session)
+        let localData;
+        if(session == "false"){
+            console.log("session  en initcounter false => "+session)
+
+             localData = sessionStorage.getItem('cartCounter');
+        } else {
+            console.log("session  en initcounter else => "+session)
+
+            localData = localStorage.getItem('cartCounter');
+        }
         if (undefined != typeof localData) {
             return JSON.parse(localData)
         }
     }
+
     function initCart() {
-        const localData = localStorage.getItem('cart');
+        console.log("initcart")
+        const session = sessionStorage.getItem('session');
+        console.log("session en initcart => "+session)
+
+        let localData;
+        if(session == "false"){
+            console.log("session  en initcart false => "+session)
+
+            localData = sessionStorage.getItem('cart')
+        } else {
+            console.log("session en initcart else => "+session)
+
+            localData = localStorage.getItem('cart');
+        }
         if (null != localData || localData == false) {
             return JSON.parse(localData);
         }
         return [];
     }
+
+
+    useEffect(() => {
+        let session = sessionStorage.getItem('session')
+        if (session == "false") {
+            console.log("session  en useeffect false cart context => "+session)
+            sessionStorage.setItem('cartCounter', JSON.stringify(cartCounter))
+            sessionStorage.setItem('cart', JSON.stringify(cart))
+        } else {
+            console.log("session en useffect else en cart context => "+session)
+            localStorage.setItem('cartCounter', JSON.stringify(cartCounter))
+            localStorage.setItem('cart', JSON.stringify(cart))
+        }
+    }, [cart])
 
     function cartReducer(cart, action) {
         switch (action.type) {
@@ -75,13 +82,6 @@ export default function CartContextProvider({ children }) {
                 return [];
         }
     }
-    // guarda la info de cantidad y items en local storage para conservarla durante la sesion
-    useEffect(() => {
-        const cartCounterJSON = JSON.stringify(cartCounter)
-        const cartJSON = JSON.stringify(cart)
-        localStorage.setItem('cartCounter', cartCounterJSON)
-        localStorage.setItem('cart', cartJSON)
-    }, [cart]);
 
     useEffect(() => {
         let precioTotal = 0;
@@ -91,18 +91,14 @@ export default function CartContextProvider({ children }) {
             });
         }
         setTotalPrice(precioTotal)
-    });
+    }, [cart]);
 
     function addToCart(item, quantity) {
-       // if(online){
-            if (!isInCart(item) && (quantity > 0)) {
-                setCartCounter(cartCounter + quantity)
-                cartDispach({
-                    type: 'add', payload: { ...item, quantity: quantity }
-                });
-           // }
-        } else {
-            window.location.assign("user/login")
+        if (!isInCart(item) && (quantity > 0)) {
+            setCartCounter(cartCounter + quantity)
+            cartDispach({
+                type: 'add', payload: { ...item, quantity: quantity }
+            });
         }
 
     }
@@ -148,8 +144,8 @@ export default function CartContextProvider({ children }) {
         const auth = getAuth();
         const docRef = doc(db, "orders", auth.currentUser.uid)
         const docSnap = await getDoc(docRef)
-        let length = docSnap.exists() ? docSnap.data().orders.length+1 : 1
-        let orderId = auth.currentUser.uid + "-" +length;
+        let length = docSnap.exists() ? docSnap.data().orders.length + 1 : 1
+        let orderId = auth.currentUser.uid + "-" + length;
         let newOrder = {
             orderId: orderId,
             date: Date(),

@@ -6,15 +6,17 @@ export default function LogInUser() {
 
     const [user, setUser] = useState();
     const [pwd, setPwd] = useState();
-    const [session, setSession] = useState();
+    const [isChecked, setIsChecked] = useState(false);
 
     const handleUserChange = event => setUser(event.target.value);
     const handlePwdChange = event => setPwd(event.target.value);
-    const handleSessionChange = event => setSession(event.target.value);
+    const handleSessionChange = () => {
+        setIsChecked(!isChecked);
+    }
 
     const onLogin = async (evt) => {
         evt.preventDefault()
-        let response = await logIn(user, pwd, session)
+        let response = await logIn(user, pwd, isChecked)
         if (response.status == 400) {
             if (response.state == "Firebase: Error (auth/user-not-found).") {
                 document.getElementById("loginStatus").innerHTML = "No existe un usuario registrado con ese email";
@@ -25,9 +27,6 @@ export default function LogInUser() {
             if (response.state == 'Firebase: Error (auth/wrong-password).') {
                 document.getElementById("loginStatus").innerHTML = "Contraseña incorrecta";
             }
-        }
-        if(response.status == 200){
-            window.location.assign("/");
         }
     }
 
@@ -42,8 +41,8 @@ export default function LogInUser() {
                 <input type="password" class="form-control" id="password" onChange={handlePwdChange} />
             </div>
             <div class="mb-3 form-check" >
-                <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-                <label class="form-check-label" for="exampleCheck1">Mantener sesión iniciada</label>
+                <input type="checkbox" class="form-check-input" id="session" checked={isChecked} onClick={handleSessionChange} />
+                <label class="form-check-label" for="exampleCheck1"  >Mantener sesión iniciada</label>
             </div>
 
             <div  className="userInfo">
