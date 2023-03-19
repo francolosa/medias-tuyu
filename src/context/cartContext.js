@@ -171,7 +171,7 @@ export default function CartContextProvider({ children }) {
             return window.location.assign("user/logIn")
         }
         await saveOrderOnDB()
-        //actualizarStockItems();
+        actualizarStockItems();
         clearCart()
     }
     return (<CartContext.Provider value={{ cart, cartCounter, setCartCounter, cartDispach, addToCart, deleteFromCart, clearCart, modifyQuantInCart, generarOrden, totalPrice }}>
