@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/cartContext';
 import { UserContext } from '../context/userContext';
 import { AuthContext } from '../context/authContext';
-import { AdminContext } from '../context/adminContext';
 //import Sonnet from 'react-bootstrap/Tab'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';

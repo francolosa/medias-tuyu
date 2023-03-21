@@ -40,7 +40,7 @@ function App() {
 
 
   if (!loaded) {
-    return <div class="loader"><div></div></div>
+    return <div className="loader"></div>
   }
 
   return (<>

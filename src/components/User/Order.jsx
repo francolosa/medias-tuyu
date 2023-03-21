@@ -41,19 +41,4 @@ export default function Order({ order }) {
             ) : <h1 style={{ padding: "25px" }}>Nada por aquí...</h1>}
         </>
     )
-    return (
-        <div className='Order'>
-            <div className='description'>
-                <li> ID: {order.orderId}</li>
-                <li> FECHA: {order.date}</li>
-                <li> PRECIO TOTAL: {order.totalPrice}</li>
-                <ul>{
-                    order.items.map((item) => {
-                        return <OrderItem item={item} />
-                    })
-                }
-                </ul>
-            </div>
-        </div>
-    )
 }

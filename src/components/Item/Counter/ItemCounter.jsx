@@ -1,6 +1,5 @@
-import React, { useReducer, useContext } from 'react';
+import React, { useReducer } from 'react';
 import AddToCart from '../../Cart/AddToCart';
-import { CartContext } from '../../../context/cartContext';
 import Button from 'react-bootstrap/Button';
 
 export default function ItemCounter({ item }) {
@@ -24,6 +23,8 @@ export default function ItemCounter({ item }) {
             case 'minus':
                 //                setCartCounter(cartCounter-1)
                 return (counter - 1);
+            case 'default':
+                return;
         }
     }
 

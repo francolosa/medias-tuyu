@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { CartContext, cart } from '../../context/cartContext';
+import { CartContext } from '../../context/cartContext';
 import Button from 'react-bootstrap/Button';
 
 export default function AddToCart({ item, quantity }) {

@@ -1,10 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import ItemCounter from './Counter/ItemCounter';
 import { Link } from 'react-router-dom'
-import { db } from "../../firebase";
-import { doc, deleteDoc } from 'firebase/firestore'
-import { UserContext } from '../../context/userContext'
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
 export default function Item({ item }) {

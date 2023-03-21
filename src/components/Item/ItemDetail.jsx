@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import ItemCounter from './Counter/ItemCounter';
 import { useParams } from 'react-router-dom';
-import { getDoc, doc, deleteDoc } from 'firebase/firestore';
+import { getDoc, doc } from 'firebase/firestore';
 import { db } from "../../firebase";
-import { UserContext } from '../../context/userContext'
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Dropdown from 'react-bootstrap/Dropdown';
 
